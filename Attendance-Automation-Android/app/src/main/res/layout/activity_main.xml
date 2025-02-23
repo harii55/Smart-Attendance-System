@@ -19,14 +19,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        android:fadeScrollbars="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="20dp"
-        android:scrollbars="vertical"
+        android:padding="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:id="@+id/initialTextIcons"
@@ -91,14 +88,21 @@
                 android:id="@+id/TextEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your SST mail"
                 android:textColorHint="#AFAFAF"
                 app:boxBackgroundColor="#99E9E9E9"
-                app:boxStrokeWidth="0dp">
+                app:boxStrokeColor="#9B9A9A"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="1dp"
+                app:cursorColor="#111111"
+                app:hintEnabled="false"
+                app:hintTextColor="#7A7A7A">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textColor="#111111"
+                    android:hint="Enter your SST mail"
+                    android:textColorHint="#9B9A9A"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,16 +123,21 @@
                 android:id="@+id/password_toggle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your SST Roll No."
                 android:textColorHint="#AFAFAF"
                 app:boxBackgroundColor="#99E9E9E9"
+                app:boxStrokeColor="#9B9A9A"
                 app:boxStrokeWidth="0dp"
-                app:endIconMode="password_toggle">>
+                app:cursorColor="#111111"
+                app:endIconMode="password_toggle"
+                app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="#111111"
+                    android:hint="Enter your SST Roll No."
+                    android:textColorHint="#9B9A9A"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -150,6 +159,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_corner"
                 android:backgroundTint="#3572EC"
+                android:clickable="true"
                 android:padding="14dp"
                 android:text="Sign In"
                 android:textAlignment="center"
@@ -168,6 +178,7 @@
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="80pt"
                     android:layout_height="wrap_content"
+                    app:dividerColor="#AFAFAF"
                     app:dividerInsetEnd="16dp"
                     app:dividerInsetStart="16dp" />
 
@@ -183,6 +194,7 @@
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="80pt"
                     android:layout_height="wrap_content"
+                    app:dividerColor="#AFAFAF"
                     app:dividerInsetEnd="16dp"
                     app:dividerInsetStart="16dp" />
 
@@ -192,21 +204,22 @@
                 android:id="@+id/googleSignInButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="@drawable/rounded_corner_border"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:foreground="@drawable/rounded_corner_border">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/googleIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/baseline_account_circle_24"
+                    android:layout_width="32dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/google_icon"
                     tools:layout_editor_absoluteX="137dp"
                     tools:layout_editor_absoluteY="47dp" />
 
                 <TextView
                     android:id="@+id/googleSignInText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="182dp"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#FFFFFF"
                     android:fontFamily="sans-serif-medium"
