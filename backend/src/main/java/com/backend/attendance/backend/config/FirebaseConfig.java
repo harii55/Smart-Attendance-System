@@ -13,7 +13,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try{
-            FileInputStream fis = new FileInputStream("src/main/resources/firebase-config.json");
+            FileInputStream fis = new FileInputStream("D:\\Attendance-Automation-Project\\Smart-Attendance-System\\backend\\src\\main\\java\\com\\backend\\attendance\\backend\\config\\service-account-key.json");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(fis))
                     .build();

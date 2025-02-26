@@ -38,6 +38,8 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("com.google.firebase:firebase-admin:9.1.1")
+    implementation ("javax.xml.bind:jaxb-api:2.3.1")
+    implementation ("org.glassfish.jaxb:jaxb-runtime:2.3.1")
 }
 
 tasks.withType<Test> {
