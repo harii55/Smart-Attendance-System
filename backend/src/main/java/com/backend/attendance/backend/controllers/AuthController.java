@@ -34,64 +34,41 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginOrRegister(@RequestBody AuthRequest authRequest) throws Exception {
-        // TODO: Write a function to handle the login or register...
+        String email = authRequest.getEmail();
+        String password = authRequest.getPassword();
 
-            // Handle Login Request
-                String email = authRequest.getEmail();
-                String password = authRequest.getPassword();
+        Optional<String> rollNumber = EmailValidator.extractRollNumber(email);
+        if (!rollNumber.isPresent()) {
+            return ResponseEntity.badRequest().body("Invalid email format");
+        }
 
-                Optional<String> rollNumber = EmailValidator.extractRollNumber(email);
-                if (!rollNumber.isPresent()) {
-                    return ResponseEntity.badRequest().body("Invalid email format");
-                }
+        Optional<User> userOptional = userRepository.findByEmail(email);
 
-                Optional<User> userOptional = userRepository.findByEmail(email);
-                if (userOptional.isEmpty()) {
-                    return ResponseEntity.badRequest().body("User not found");
-                }
+        if (userOptional.isPresent()) {
+            // Login
+            User user = userOptional.get();
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                return ResponseEntity.badRequest().body("Invalid password");
+            }
 
-                User user = userOptional.get();
+            String token = jwtUtil.generateToken(email);
+            return ResponseEntity.ok(new AuthResponse(token));
+        } else {
+            // Register
+            User newUser = new User();
+            newUser.setEmail(email);
+            newUser.setPassword(passwordEncoder.encode(password));
+            newUser.setRollNumbeer(rollNumber.get());
 
-                if (!passwordEncoder.matches(password, user.getPassword())) {
-                    return ResponseEntity.badRequest().body("Invalid password");
-                }
+            userRepository.save(newUser);
 
-                String token = jwtUtil.generateToken(email);
-
-                return ResponseEntity.ok(new AuthResponse(token));
+            String token = jwtUtil.generateToken(email);
+            return ResponseEntity.ok(new AuthResponse(token));
+        }
     }
 
 
-            // Handle Register Request
-            @PostMapping("/register")
-            public ResponseEntity<?> register(@RequestBody AuthRequest authRequest) throws Exception {
-                String email = authRequest.getEmail();
-                String password = authRequest.getPassword();
-
-                Optional<String> rollNumber = EmailValidator.extractRollNumber(email);
-                if (!rollNumber.isPresent()) {
-                    return ResponseEntity.badRequest().body("Invalid email format");
-                }
-
-                Optional<User> userOptional = userRepository.findByEmail(email);
-                if (userOptional.isPresent()) {
-                    return ResponseEntity.badRequest().body("User already exists");
-                }
-
-                User newUser = new User();
-                newUser.setEmail(email);
-                newUser.setPassword(passwordEncoder.encode(password));
-                newUser.setRollNumbeer(rollNumber.get());
-
-                userRepository.save(newUser);
-
-                String token = jwtUtil.generateToken(email);
-
-                return ResponseEntity.ok(new AuthResponse(token));
-            }
-
-
-            @PostMapping("/google")
+    @PostMapping("/google")
             public ResponseEntity<?> googleLogin(@RequestBody GoogleAuthRequest googleAuthRequest) throws Exception {
                 String idToken = googleAuthRequest.getIdToken();
 
