@@ -8,8 +8,8 @@ public class UserAttendanceRow {
         private LocalDate attendanceDate;
         private Boolean attendanceStatus;
 
-        // Constructors
-        public UserAttendanceRow () {}
+
+        private UserAttendanceRow () {}
 
         public UserAttendanceRow (String rollNo, LocalDate attendanceDate, Boolean attendanceStatus) {
             this.rollNo = rollNo;
@@ -17,7 +17,7 @@ public class UserAttendanceRow {
             this.attendanceStatus = attendanceStatus;
         }
 
-        // Getters & Setters
+
         public String getRollNo() {
             return rollNo;
         }
