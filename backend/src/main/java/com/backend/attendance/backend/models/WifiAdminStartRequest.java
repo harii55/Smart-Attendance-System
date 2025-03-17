@@ -3,12 +3,16 @@ package com.backend.attendance.backend.models;
 public class WifiAdminStartRequest {
 
     private String subject;
+    private String batch;
+    private Boolean monitoring;
 
     private WifiAdminStartRequest() {
     }
 
-    public WifiAdminStartRequest(String subject) {
+    public WifiAdminStartRequest(String subject, String batch, Boolean monitoring) {
         this.subject = subject;
+        this.batch = batch;
+        this.monitoring = monitoring;
     }
 
 
@@ -20,4 +24,19 @@ public class WifiAdminStartRequest {
         this.subject = subject;
     }
 
+    public String getBatch() {
+        return batch;
+    }
+
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+
+    public Boolean getMonitoring() {
+        return monitoring;
+    }
+
+    public void setMonitoring(Boolean monitoring) {
+        this.monitoring = monitoring;
+    }
 }
