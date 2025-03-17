@@ -1,17 +1,17 @@
 package com.backend.attendance.backend.models;
 
-public class WifiMonitoringResponse {
+public class WifiStudentResponse {
 
 
     private String ipAddress;
     private String status;
 
-    public WifiMonitoringResponse(String ipAddress, String status) {
+    public WifiStudentResponse(String ipAddress, String status) {
         this.ipAddress = ipAddress;
         this.status = status;
     }
 
-    private WifiMonitoringResponse() {
+    private WifiStudentResponse() {
     }
 
     public String getStatus() {

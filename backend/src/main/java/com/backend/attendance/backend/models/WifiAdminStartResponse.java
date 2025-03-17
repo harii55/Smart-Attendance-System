@@ -1,9 +1,9 @@
 package com.backend.attendance.backend.models;
 
-public class MonitoringStartResponse {
+public class WifiAdminStartResponse {
     private String message = "";
 
-    private MonitoringStartResponse() {}
+    public WifiAdminStartResponse() {}
 
     public String getMessage() {
         return message;

@@ -1,17 +1,18 @@
 package com.backend.attendance.backend.models;
 
-public class WifiMonitoringRequest {
+public class WifiStudentRequest {
     private String email;
     private String ipAddress;
     private String batchName;
 
-    public WifiMonitoringRequest(String email, String ipAddress, String batchName) {
+
+    public WifiStudentRequest(String email, String ipAddress, String batchName) {
         this.email = email;
         this.ipAddress = ipAddress;
         this.batchName = batchName;
     }
 
-    private WifiMonitoringRequest() {
+    private WifiStudentRequest() {
     }
 
     public String getEmail() {

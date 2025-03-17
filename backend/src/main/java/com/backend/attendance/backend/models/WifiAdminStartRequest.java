@@ -1,13 +1,13 @@
 package com.backend.attendance.backend.models;
 
-public class MonitoringStartRequest {
+public class WifiAdminStartRequest {
 
     private String subject;
 
-    private MonitoringStartRequest() {
+    private WifiAdminStartRequest() {
     }
 
-    public MonitoringStartRequest(String subject) {
+    public WifiAdminStartRequest(String subject) {
         this.subject = subject;
     }
 
