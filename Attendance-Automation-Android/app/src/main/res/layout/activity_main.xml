@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -54,7 +54,7 @@
                 tools:layout_editor_absoluteY="176dp" />
 
             <TextView
-                android:id="@+id/PleaseSignInToContinue"
+                android:id="@+id/signInMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
@@ -98,11 +98,12 @@
                 app:hintTextColor="#7A7A7A">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/sstMail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#111111"
                     android:hint="Enter your SST mail"
-                    android:textColorHint="#9B9A9A"/>
+                    android:textColor="#111111"
+                    android:textColorHint="#9B9A9A" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -132,12 +133,13 @@
                 app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/sstRollNo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint="Enter your SST Roll No."
                     android:inputType="textPassword"
                     android:textColor="#111111"
-                    android:hint="Enter your SST Roll No."
-                    android:textColorHint="#9B9A9A"/>
+                    android:textColorHint="#9B9A9A" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,6 +162,7 @@
                 android:background="@drawable/rounded_corner"
                 android:backgroundTint="#3572EC"
                 android:clickable="true"
+                android:onClick="signIn"
                 android:padding="14dp"
                 android:text="Sign In"
                 android:textAlignment="center"
@@ -231,6 +234,4 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

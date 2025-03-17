@@ -60,6 +60,7 @@
                 android:background="@drawable/rounded_corner"
                 android:backgroundTint="#3572EC"
                 android:clickable="true"
+                android:onClick="markAttendance"
                 android:padding="14dp"
                 android:text="Mark Attendance"
                 android:textAlignment="center"
