@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/attendance/wifi/admin")
 public class WifiAdminController {
 
-    @PostMapping("/")
-    public ResponseEntity<?> startMonitoring(@RequestBody WifiStudentRequest wifiMonitoringRequest) throws Exception {
-        return ResponseEntity.ok(new WifiStudentResponse("192.168.0.0" , "false"));
+    @PostMapping("/start")
+    public ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
+        if (request.getMonitoring()) {
+            return ResponseEntity.ok(new WifiAdminStartResponse("true"));
+        }else{
+            return ResponseEntity.ok(new WifiAdminStartResponse("false"));
+        }
+
     }
 
 }

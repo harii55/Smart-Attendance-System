@@ -1,18 +1,11 @@
 package com.backend.attendance.backend.models;
 
 public class WifiAdminStartResponse {
-    private Boolean success;
-
-    public WifiAdminStartResponse() {}
-
-    public WifiAdminStartResponse(Boolean success) {
+    private String success;
+    public WifiAdminStartResponse(String success) {
         this.success = success;
     }
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public Boolean getSuccess() {
+    public String getSuccess() {
         return success;
     }
 }
