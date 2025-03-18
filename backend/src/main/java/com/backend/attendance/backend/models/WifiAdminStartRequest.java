@@ -4,6 +4,7 @@ public class WifiAdminStartRequest {
 
     private String subject;
     private String batch;
+    private String year;
     private Boolean monitoring;
 
     private WifiAdminStartRequest() {
@@ -12,6 +13,7 @@ public class WifiAdminStartRequest {
     public WifiAdminStartRequest(String subject, String batch, Boolean monitoring) {
         this.subject = subject;
         this.batch = batch;
+        this.year = year;
         this.monitoring = monitoring;
     }
 
@@ -30,6 +32,14 @@ public class WifiAdminStartRequest {
 
     public void setBatch(String batch) {
         this.batch = batch;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getYear() {
+        return year;
     }
 
     public Boolean getMonitoring() {

@@ -4,12 +4,14 @@ public class WifiStudentRequest {
     private String email;
     private String ipAddress;
     private String batchName;
+    private String year;
 
 
     public WifiStudentRequest(String email, String ipAddress, String batchName) {
         this.email = email;
         this.ipAddress = ipAddress;
         this.batchName = batchName;
+        this.year = year;
     }
 
     private WifiStudentRequest() {
@@ -37,6 +39,14 @@ public class WifiStudentRequest {
 
     public String getBatchName() {
         return batchName;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getYear() {
+        return year;
     }
 
 }
