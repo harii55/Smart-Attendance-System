@@ -19,16 +19,6 @@ import java.util.HashMap;
 @RequestMapping("/attendance/wifi/admin")
 public class WifiAdminController {
 
-//    @PostMapping("/start")
-//    public ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
-//        if (request.getMonitoring()) {
-//            return ResponseEntity.ok(new WifiAdminStartResponse("true"));
-//        }else{
-//            return ResponseEntity.ok(new WifiAdminStartResponse("false"));
-//        }
-//
-//    }
-
     @Autowired
     private final WifiAdminService wifiAdminService;
 

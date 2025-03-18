@@ -5,6 +5,7 @@ public class WifiStudentRequest {
     private String ipAddress;
     private String batchName;
     private String year;
+    private String subject;
 
 
     public WifiStudentRequest(String email, String ipAddress, String batchName) {
@@ -48,5 +49,4 @@ public class WifiStudentRequest {
     public String getYear() {
         return year;
     }
-
 }

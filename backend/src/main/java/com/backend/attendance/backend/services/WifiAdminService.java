@@ -14,16 +14,17 @@ import java.util.HashMap;
 public class WifiAdminService {
     private HashMap<String, HashMap<String, ArrayList<String>>> monitoringStatusMap = new HashMap<>();
 
+    public HashMap<String, HashMap<String, ArrayList<String>>> getMonitoringStatusMap() {
+        return monitoringStatusMap;
+    }
 
-    public ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
+    public WifiAdminStartResponse startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
         String year = request.getYear();
         String batch = request.getBatch();
         String subject = request.getSubject();
         String status = request.getMonitoring().toString();
 
         if (request.getMonitoring()) {
-            System.out.println("Starting Monitoring");
-
 
             HashMap<String, ArrayList<String>> monitoringStatusInnerMap = new HashMap<>();
             ArrayList<String> monitoringStatusList = new ArrayList<>();
@@ -32,15 +33,19 @@ public class WifiAdminService {
             monitoringStatusList.add(1,status);
 
             monitoringStatusInnerMap.put(batch,monitoringStatusList);
-            monitoringStatusMap.put(year,monitoringStatusInnerMap);
+
+            if (monitoringStatusMap.containsKey(year)) {
+                monitoringStatusMap.get(year).put(batch,monitoringStatusList);
+            }else {
+                monitoringStatusMap.put(year, monitoringStatusInnerMap);
+            }
 
 
-            return ResponseEntity.ok(new WifiAdminStartResponse("true"));
+            return new WifiAdminStartResponse("true");
         }else{
-            System.out.println("Stop Monitoring");
             monitoringStatusMap.get(year).remove(batch);
 
-            return ResponseEntity.ok(new WifiAdminStartResponse("false"));
+            return new WifiAdminStartResponse("false");
         }
     }
 
