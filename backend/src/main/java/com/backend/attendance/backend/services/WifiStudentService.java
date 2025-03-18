@@ -1,14 +1,14 @@
-package com.backend.attendance.backend.controllers;
+package com.backend.attendance.backend.services;
 
 import com.backend.attendance.backend.models.WifiStudentRequest;
 import com.backend.attendance.backend.models.WifiStudentResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@RestController
-@RequestMapping("/attendance/wifi/student")
-public class StudentWifiMonitoringController {
-
+@Service
+public class WifiStudentService {
 
     @PostMapping("/start")
     public ResponseEntity<?> startMonitoring(@RequestBody WifiStudentRequest wifiMonitoringRequest) throws Exception {
