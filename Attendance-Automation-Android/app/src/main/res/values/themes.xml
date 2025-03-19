@@ -3,11 +3,12 @@
     <style name="Base.Theme.AttendanceAutomationAndroid" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorPrimary">#3572EC</item>
         <item name="android:statusBarColor">#FFFFFF</item>
         <item name="android:navigationBarColor">#FFFFFF</item>
         <item name="colorAccent">#3572EC</item>
         <item name="colorControlActivated">#3572EC</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="Theme.AttendanceAutomationAndroid" parent="Base.Theme.AttendanceAutomationAndroid" />

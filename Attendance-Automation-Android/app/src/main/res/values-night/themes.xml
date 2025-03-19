@@ -3,5 +3,11 @@
     <style name="Base.Theme.AttendanceAutomationAndroid" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">#3572EC</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="colorAccent">#3572EC</item>
+        <item name="colorControlActivated">#3572EC</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 </resources>

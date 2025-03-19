@@ -116,7 +116,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="11dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Roll Number"
+                android:text="Password"
                 android:textColor="#9B9A9A"
                 android:textSize="17dp"
                 app:layout_constraintBottom_toTopOf="@+id/editTextNumber"
@@ -135,10 +135,10 @@
                 app:hintEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/sstRollNo"
+                    android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter your SST Roll No."
+                    android:hint="Enter your password"
                     android:inputType="textPassword"
                     android:textColor="#111111"
                     android:textColorHint="#9B9A9A" />

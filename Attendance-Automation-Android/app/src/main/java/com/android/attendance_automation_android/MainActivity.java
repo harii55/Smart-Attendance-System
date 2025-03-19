@@ -31,15 +31,15 @@ public class MainActivity extends AppCompatActivity {
         TextView signInMessage = (TextView) findViewById(R.id.signInMessage);
 
         EditText sstMail = (EditText) findViewById(R.id.sstMail);
-        EditText sstRollNo = (EditText) findViewById(R.id.sstRollNo);
+        EditText sstPassword = (EditText) findViewById(R.id.password);
 
         String sstMailString = sstMail.getText().toString();
-        String sstRollNoString = sstRollNo.getText().toString();
+        String sstPasswordString = sstPassword.getText().toString();
         String promptMessage;
 
-        if(sstMailString.isEmpty() || sstRollNoString.isEmpty()){
-            if(sstMailString.isEmpty() && sstRollNoString.isEmpty()) {
-                promptMessage = "Please Enter the Credentials!";
+        if(sstMailString.isEmpty() || sstPasswordString.isEmpty()){
+            if(sstMailString.isEmpty() && sstPasswordString.isEmpty()) {
+                promptMessage = "Please Enter your Credentials!";
             } else if (sstMailString.isEmpty()){
                 promptMessage = "Please Enter your SST Email!";
             } else {
@@ -53,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("SignInButton", "Sign In Attempted");
         Log.i("Mail", sstMailString);
-        Log.i("RollNo", sstRollNoString);
+        Log.i("RollNo", sstPasswordString);
 
-        new LoginTask().execute(sstMailString, sstRollNoString);
+        new LoginTask().execute(sstMailString, sstPasswordString);
     }
 
     private class LoginTask extends AsyncTask<String, Void, String>{
