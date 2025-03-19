@@ -61,6 +61,8 @@
                 android:text="Please sign in to continue"
                 android:textColor="#EB949393"
                 android:textSize="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="25dp"
                 tools:layout_editor_absoluteX="113dp"
                 tools:layout_editor_absoluteY="257dp" />
         </LinearLayout>
