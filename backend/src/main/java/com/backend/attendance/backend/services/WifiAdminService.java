@@ -18,13 +18,19 @@ public class WifiAdminService {
         return monitoringStatusMap;
     }
 
-    public WifiAdminStartResponse startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
+    public void setMonitoringStatusMap(HashMap<String, HashMap<String, ArrayList<String>>> monitoringStatusMap) {
+        this.monitoringStatusMap = monitoringStatusMap;
+    }
+
+    public ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
         String year = request.getYear();
         String batch = request.getBatch();
         String subject = request.getSubject();
         String status = request.getMonitoring().toString();
 
         if (request.getMonitoring()) {
+            System.out.println("Starting Monitoring");
+
 
             HashMap<String, ArrayList<String>> monitoringStatusInnerMap = new HashMap<>();
             ArrayList<String> monitoringStatusList = new ArrayList<>();
@@ -33,19 +39,15 @@ public class WifiAdminService {
             monitoringStatusList.add(1,status);
 
             monitoringStatusInnerMap.put(batch,monitoringStatusList);
-
-            if (monitoringStatusMap.containsKey(year)) {
-                monitoringStatusMap.get(year).put(batch,monitoringStatusList);
-            }else {
-                monitoringStatusMap.put(year, monitoringStatusInnerMap);
-            }
+            monitoringStatusMap.put(year,monitoringStatusInnerMap);
 
 
-            return new WifiAdminStartResponse("true");
+            return ResponseEntity.ok(new WifiAdminStartResponse("true"));
         }else{
+            System.out.println("Stop Monitoring");
             monitoringStatusMap.get(year).remove(batch);
 
-            return new WifiAdminStartResponse("false");
+            return ResponseEntity.ok(new WifiAdminStartResponse("false"));
         }
     }
 
