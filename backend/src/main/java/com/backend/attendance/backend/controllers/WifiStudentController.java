@@ -4,6 +4,7 @@ import com.backend.attendance.backend.models.WifiStudentRequest;
 import com.backend.attendance.backend.models.WifiStudentResponse;
 import com.backend.attendance.backend.services.WifiStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,17 @@ public class WifiStudentController {
     @PostMapping("/start")
     public ResponseEntity<?> startMonitoring(@RequestBody WifiStudentRequest request) throws Exception {
         if(request.getIpAddress() != null && !request.getIpAddress().isEmpty() && request.getYear() != null && !request.getYear().isEmpty() && request.getBatchName() != null && !request.getBatchName().isEmpty() && request.getEmail() != null && !request.getEmail().isEmpty()) {
-            return ResponseEntity.ok(wifiStudentService.startMonitoring(request));
+            WifiStudentResponse response = wifiStudentService.startMonitoring(request);
+            if (response.getMessage() == "year"){
+                return new ResponseEntity<>(response , HttpStatus.BAD_REQUEST);
+            }
+            if (response.getMessage() == "batch"){
+                return new ResponseEntity<>(response , HttpStatus.BAD_REQUEST);
+            }
+            if (response.getMessage() == "email"){
+                return new ResponseEntity<>(response , HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>(response , HttpStatus.OK);
         }else{
             return ResponseEntity.badRequest().build();
         }

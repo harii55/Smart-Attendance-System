@@ -5,6 +5,7 @@ import com.backend.attendance.backend.models.AuthRequest;
 import com.backend.attendance.backend.models.AuthResponse;
 import com.backend.attendance.backend.models.GoogleAuthRequest;
 import com.backend.attendance.backend.models.User;
+import com.backend.attendance.backend.repositories.StudentDirectory;
 import com.backend.attendance.backend.repositories.UserRepository;
 import com.backend.attendance.backend.utils.EmailValidator;
 import com.backend.attendance.backend.utils.JdbcUtil;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -37,21 +39,15 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private JdbcUtil jdbcUtil;
+    private StudentDirectory studentDirectory;
 
 
     public ResponseEntity<?> loginOrRegister(@RequestBody AuthRequest authRequest) throws Exception {
-        Connection con = jdbcUtil.createConnection();
 
-        Statement statement = con.createStatement();
-        String sql = "select * from student_directory where email = '" + authRequest.getEmail() + "'";
-        ResultSet rs = statement.executeQuery(sql);
+        String email = authRequest.getEmail();
+        if (studentDirectory.lookforEmail(email)) {
 
-        if (rs.next()) {
-
-            String email = authRequest.getEmail();
             String password = authRequest.getPassword();
-
             Optional<String> rollNumber = EmailValidator.extractRollNumber(email);
             if (rollNumber.isEmpty()) {
                 return ResponseEntity.badRequest().body("Invalid email format");

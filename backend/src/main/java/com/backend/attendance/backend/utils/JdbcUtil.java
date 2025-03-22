@@ -11,27 +11,13 @@ import java.sql.SQLException;
 @Component
 public class JdbcUtil {
 
-
-//
-//    @Value("${app.url}")
-//    String url;
-//
-//    @Value("${app.username}")
-//    String uname;
-//
-//
-//    @Value("${app.password}")
-//    String pass;
-//
-
-String url = "jdbc:postgresql://localhost:5432/mydatabase";
-String uname = "myuser";
-String pass = "mypassword";
+    String url = "jdbc:postgresql://localhost:5432/mydatabase";
+    String uname = "myuser";
+    String pass = "mypassword";
 
     public Connection createConnection() throws SQLException {
 
         return DriverManager.getConnection(url,uname,pass);
     }
-
 
 }

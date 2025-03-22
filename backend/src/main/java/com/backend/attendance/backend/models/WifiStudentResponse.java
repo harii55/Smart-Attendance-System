@@ -2,13 +2,14 @@ package com.backend.attendance.backend.models;
 
 public class WifiStudentResponse {
 
-
+    private String message;
     private String ipAddress;
     private String status;
 
-    public WifiStudentResponse(String ipAddress, String status) {
+    public WifiStudentResponse(String ipAddress, String status, String message) {
         this.ipAddress = ipAddress;
         this.status = status;
+        this.message = message;
     }
 
     private WifiStudentResponse() {
@@ -30,6 +31,12 @@ public class WifiStudentResponse {
         this.ipAddress = ipAddress;
     }
 
+    public String getMessage() {
+        return message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
 }
 

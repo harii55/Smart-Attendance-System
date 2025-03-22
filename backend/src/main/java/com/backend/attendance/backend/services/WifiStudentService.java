@@ -2,8 +2,10 @@ package com.backend.attendance.backend.services;
 
 import com.backend.attendance.backend.models.WifiStudentRequest;
 import com.backend.attendance.backend.models.WifiStudentResponse;
+import com.backend.attendance.backend.repositories.StudentDirectory;
 import com.google.firebase.database.snapshot.StringNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,9 @@ public class WifiStudentService {
     @Autowired
     private WifiAdminService wifiAdminService;
 
+    @Autowired
+    private StudentDirectory studentDirectory;
+
     private HashMap<String, HashMap<String, HashMap<String, HashMap<String, String>>>> attendanceMap = new HashMap<>();
 
     public WifiStudentResponse startMonitoring(@RequestBody WifiStudentRequest wifiMonitoringRequest) throws Exception {
@@ -25,6 +30,20 @@ public class WifiStudentService {
         String batch = wifiMonitoringRequest.getBatchName();
         String email = wifiMonitoringRequest.getEmail();
         String year = wifiMonitoringRequest.getYear();
+
+        String[] isValidRequestCheck = studentDirectory.checkForBatchAndYear(email, batch, year);
+
+        if (isValidRequestCheck[0].equals("false")) {
+            return new WifiStudentResponse("192.168.0.0" , "false" , "email");
+        }
+
+        if (isValidRequestCheck[1].equals("false")) {
+            return new WifiStudentResponse("192.168.0.0" , "false" , "batch");
+        }
+
+        if (isValidRequestCheck[2].equals("false")) {
+            return new WifiStudentResponse("192.168.0.0" , "false" , "year");
+        }
 
         try{
 //            TODO: Check existence of ip in range... (later)
@@ -35,9 +54,7 @@ public class WifiStudentService {
                 if(statusList != null){
                     String subject = statusList.get(0);
                     String status = statusList.get(1);
-
                     if (status != null && status.equals("true")) {
-
                         if (attendanceMap.containsKey(year)){
                             if (attendanceMap.get(year).containsKey(batch)){
                                 if (attendanceMap.get(year).get(batch).containsKey(subject)){
@@ -68,18 +85,15 @@ public class WifiStudentService {
             }else{
                 System.out.println("Attendance Not Found");
             }
-
             System.out.println(attendanceMap);
-
         }catch (Exception e){
             e.printStackTrace();
         }
-
-        return new WifiStudentResponse("192.168.0.0" , "true");
+        return new WifiStudentResponse("192.168.0.0" , "true", "success");
     }
 
     public WifiStudentResponse stopMonitoring(@RequestBody WifiStudentRequest wifiMonitoringRequest) throws Exception {
-        return new WifiStudentResponse("192.168.0.0" , "false");
+        return new WifiStudentResponse("192.168.0.0" , "false", "success");
     }
 
 }
