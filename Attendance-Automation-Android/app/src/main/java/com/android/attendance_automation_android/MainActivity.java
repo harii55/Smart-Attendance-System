@@ -22,6 +22,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
     private static final String BASE_URL = "http://3.95.186.173:8080/";
     private AuthApi authApi;
+    private IpApiService ipApiService;
+    private TextView signInMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(getResources().getColor(android.R.color.background_dark));
 
+        signInMessage = findViewById(R.id.signInMessage);
+
         // Initializing Retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -39,10 +43,17 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         authApi = retrofit.create(AuthApi.class);
-    }
-    public void signIn(View view){
-        TextView signInMessage = findViewById(R.id.signInMessage);
 
+        // Initialize Retrofit for IP API
+        Retrofit ipRetrofit = new Retrofit.Builder()
+                .baseUrl("https://api64.ipify.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ipApiService = ipRetrofit.create(IpApiService.class);
+    }
+
+    public void signIn(View view) {
         EditText sstMail = findViewById(R.id.sstMail);
         EditText sstPassword = findViewById(R.id.password);
 
@@ -50,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
         String sstPasswordString = sstPassword.getText().toString();
         String promptMessage;
 
-        if(sstMailString.isEmpty() || sstPasswordString.isEmpty()){
-            if(sstMailString.isEmpty() && sstPasswordString.isEmpty()) {
+        if (sstMailString.isEmpty() || sstPasswordString.isEmpty()) {
+            if (sstMailString.isEmpty() && sstPasswordString.isEmpty()) {
                 promptMessage = "Please Enter your Credentials";
-            } else if (sstMailString.isEmpty()){
+            } else if (sstMailString.isEmpty()) {
                 promptMessage = "Please Enter your SST Email";
             } else {
                 promptMessage = "Please Enter your Password";
@@ -72,8 +83,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loginUser(String email, String password) {
-        TextView signInMessage = findViewById(R.id.signInMessage);
-        LoginRequest request = new LoginRequest(email, password);
+        ipApiService.getIp().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<IpResponse> call, Response<IpResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String userIp = response.body().getIp();
+                    Log.i("USER_IP", "IP Address: " + userIp);
+                    sendLoginRequest(email, password, userIp);
+                } else {
+                    Log.e("USER_IP", "Failed to fetch IP");
+                    sendLoginRequest(email, password, "Unknown");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IpResponse> call, Throwable t) {
+                Log.e("USER_IP", "Error fetching IP: " + t.getMessage());
+                sendLoginRequest(email, password, "Unknown");
+            }
+        });
+    }
+
+    private void sendLoginRequest(String email, String password, String ip) {
+        LoginRequest request = new LoginRequest(email, password, ip);
         Call<LoginResponse> call = authApi.login(request);
 
         call.enqueue(new Callback<>() {
@@ -81,20 +113,12 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
-                    boolean isNewUser = response.body().isNewUser();
                     Log.i("API_RESPONSE", "Token: " + token);
 
                     Intent intent = new Intent(MainActivity.this, MarkAttendance.class);
                     intent.putExtra("TOKEN", token);
                     startActivity(intent);
                     finish();
-
-                    if (isNewUser) {
-                        Toast.makeText(MainActivity.this, "Welcome! Your account has been created.", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    }
-
                 } else {
                     signInMessage.setText("Login failed. Please try again.");
                     signInMessage.setTextColor(Color.RED);
