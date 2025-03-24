@@ -5,9 +5,9 @@ import com.backend.attendance.backend.models.AuthRequest;
 import com.backend.attendance.backend.models.AuthResponse;
 import com.backend.attendance.backend.models.GoogleAuthRequest;
 import com.backend.attendance.backend.models.User;
+import com.backend.attendance.backend.repositories.StudentRepository;
 import com.backend.attendance.backend.repositories.UserRepository;
 import com.backend.attendance.backend.utils.EmailValidator;
-import com.backend.attendance.backend.utils.JdbcUtil;
 import com.backend.attendance.backend.utils.JwtUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
@@ -17,10 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Optional;
 
 
@@ -37,13 +33,13 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private StudentDirectory studentDirectory;
+    private StudentRepository studentRepository;
 
 
     public ResponseEntity<?> loginOrRegister(@RequestBody AuthRequest authRequest) throws Exception {
 
         String email = authRequest.getEmail();
-        if (studentDirectory.lookforEmail(email)) {
+        if (studentRepository.lookforEmail(email)) {
 
             String password = authRequest.getPassword();
             Optional<String> rollNumber = EmailValidator.extractRollNumber(email);

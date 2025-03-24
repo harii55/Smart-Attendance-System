@@ -1,9 +1,6 @@
 package com.backend.attendance.backend.controllers;
 
-import com.backend.attendance.backend.models.WifiAdminStartRequest;
-import com.backend.attendance.backend.models.WifiAdminStartResponse;
-import com.backend.attendance.backend.models.WifiStudentRequest;
-import com.backend.attendance.backend.models.WifiStudentResponse;
+import com.backend.attendance.backend.models.*;
 import com.backend.attendance.backend.services.WifiAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,4 +34,8 @@ public class WifiAdminController {
        }
     }
 
+    @PostMapping("/stop")
+    ResponseEntity<?> stopMonitoring(@RequestBody WifiAdminStopRequest request) throws  Exception{
+        return wifiAdminService.stopMonitoring(request);
+    }
 }

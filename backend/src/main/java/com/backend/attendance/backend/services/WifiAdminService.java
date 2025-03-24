@@ -2,6 +2,10 @@ package com.backend.attendance.backend.services;
 
 import com.backend.attendance.backend.models.WifiAdminStartRequest;
 import com.backend.attendance.backend.models.WifiAdminStartResponse;
+import com.backend.attendance.backend.models.WifiAdminStopRequest;
+import com.backend.attendance.backend.models.WifiAdminStopResponse;
+import com.backend.attendance.backend.repositories.AttendanceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +16,13 @@ import java.util.HashMap;
 
 @Service
 public class WifiAdminService {
+
+    @Autowired
+    private AttendanceRepository attendanceRepository;
+
+    @Autowired
+    private WifiStudentService wifiStudentService;
+
     private HashMap<String, HashMap<String, ArrayList<String>>> monitoringStatusMap = new HashMap<>();
 
     public HashMap<String, HashMap<String, ArrayList<String>>> getMonitoringStatusMap() {
@@ -48,6 +59,20 @@ public class WifiAdminService {
             monitoringStatusMap.get(year).remove(batch);
 
             return ResponseEntity.ok(new WifiAdminStartResponse("false"));
+        }
+    }
+
+    public ResponseEntity<?> stopMonitoring(@RequestBody WifiAdminStopRequest request) throws Exception {
+        String year = request.getYear();
+        String batch = request.getBatch();
+        String subject = request.getSubject();
+
+        if (monitoringStatusMap.containsKey(year) && monitoringStatusMap.get(year).containsKey(batch) && monitoringStatusMap.get(year).get(batch).get(0) == subject) {
+            HashMap<String, String> data = wifiStudentService.getFilteredAttendanceMap(year, batch, subject);
+            attendanceRepository.storeData(data, batch, subject, year);
+            return ResponseEntity.ok(new WifiAdminStopResponse("OK", "Attendance Stopped"));
+        }else{
+            return ResponseEntity.ok(new WifiAdminStopResponse("BAD REQUEST", "No Attendance to be stopped for current batch"));
         }
     }
 

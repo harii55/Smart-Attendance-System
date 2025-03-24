@@ -92,4 +92,12 @@ public class WifiStudentService {
         return new WifiStudentResponse("192.168.0.0" , "false", "success");
     }
 
+    public HashMap<String, String> getFilteredAttendanceMap(String year, String batch, String subject) {
+        if (attendanceMap.containsKey(year) && attendanceMap.get(year).containsKey(batch) && attendanceMap.get(year).get(batch).containsKey(subject)) {
+            return attendanceMap.get(year).get(batch).get(subject);
+        }else{
+            return new HashMap<>();
+        }
+    }
+
 }
