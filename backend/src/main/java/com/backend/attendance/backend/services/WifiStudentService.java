@@ -2,13 +2,9 @@ package com.backend.attendance.backend.services;
 
 import com.backend.attendance.backend.models.WifiStudentRequest;
 import com.backend.attendance.backend.models.WifiStudentResponse;
-import com.backend.attendance.backend.repositories.StudentDirectory;
-import com.google.firebase.database.snapshot.StringNode;
+import com.backend.attendance.backend.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
@@ -20,7 +16,7 @@ public class WifiStudentService {
     private WifiAdminService wifiAdminService;
 
     @Autowired
-    private StudentDirectory studentDirectory;
+    private StudentRepository studentDirectory;
 
     private HashMap<String, HashMap<String, HashMap<String, HashMap<String, String>>>> attendanceMap = new HashMap<>();
 

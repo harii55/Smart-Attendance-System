@@ -2,7 +2,6 @@ package com.backend.attendance.backend.repositories;
 
 import com.backend.attendance.backend.utils.JdbcUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -11,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Repository
-public class StudentDirectory {
+public class StudentRepository {
     @Autowired
     private JdbcUtil jdbcUtil;
 

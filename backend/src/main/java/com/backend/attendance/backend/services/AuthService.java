@@ -5,7 +5,6 @@ import com.backend.attendance.backend.models.AuthRequest;
 import com.backend.attendance.backend.models.AuthResponse;
 import com.backend.attendance.backend.models.GoogleAuthRequest;
 import com.backend.attendance.backend.models.User;
-import com.backend.attendance.backend.repositories.StudentDirectory;
 import com.backend.attendance.backend.repositories.UserRepository;
 import com.backend.attendance.backend.utils.EmailValidator;
 import com.backend.attendance.backend.utils.JdbcUtil;
@@ -28,7 +27,6 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
-
     @Autowired
     private UserRepository userRepository;
 
