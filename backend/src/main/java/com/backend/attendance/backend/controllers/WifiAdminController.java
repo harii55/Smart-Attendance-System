@@ -36,6 +36,6 @@ public class WifiAdminController {
 
     @PostMapping("/stop")
     ResponseEntity<?> stopMonitoring(@RequestBody WifiAdminStopRequest request) throws  Exception{
-        return wifiAdminService.stopMonitoring(request);
+        return ResponseEntity.ok(wifiAdminService.stopMonitoring(request));
     }
 }

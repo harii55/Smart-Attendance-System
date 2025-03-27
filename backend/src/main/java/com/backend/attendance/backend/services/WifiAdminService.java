@@ -63,17 +63,27 @@ public class WifiAdminService {
     }
 
     public ResponseEntity<?> stopMonitoring(@RequestBody WifiAdminStopRequest request) throws Exception {
+        System.out.println("I am here");
         String year = request.getYear();
         String batch = request.getBatch();
         String subject = request.getSubject();
 
-        if (monitoringStatusMap.containsKey(year) && monitoringStatusMap.get(year).containsKey(batch) && monitoringStatusMap.get(year).get(batch).get(0) == subject) {
+        try{
+            System.out.println("I am here");
+        if (monitoringStatusMap.containsKey(year) && monitoringStatusMap.get(year).containsKey(batch)) {
             HashMap<String, String> data = wifiStudentService.getFilteredAttendanceMap(year, batch, subject);
+            System.out.println(data);
+            System.out.println("I am here");
             attendanceRepository.storeData(data, batch, subject, year);
             return ResponseEntity.ok(new WifiAdminStopResponse("OK", "Attendance Stopped"));
         }else{
             return ResponseEntity.ok(new WifiAdminStopResponse("BAD REQUEST", "No Attendance to be stopped for current batch"));
         }
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
 }
