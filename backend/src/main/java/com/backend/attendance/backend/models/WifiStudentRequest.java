@@ -1,9 +1,20 @@
 package com.backend.attendance.backend.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class WifiStudentRequest {
+    @Setter
+    @Getter
     private String email;
+    @Getter
+    @Setter
     private String ipAddress;
+    @Getter
+    @Setter
     private String batchName;
+    @Getter
+    @Setter
     private String year;
     private String subject;
 
@@ -18,35 +29,4 @@ public class WifiStudentRequest {
     private WifiStudentRequest() {
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public void setBatchName(String batchName) {
-        this.batchName = batchName;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public String getBatchName() {
-        return batchName;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
-
-    public String getYear() {
-        return year;
-    }
 }

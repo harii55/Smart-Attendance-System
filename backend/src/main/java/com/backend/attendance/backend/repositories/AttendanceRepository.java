@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 @Repository
 public class AttendanceRepository {
@@ -22,9 +23,6 @@ public class AttendanceRepository {
     public boolean createTable(String year,String batch,String subject) throws SQLException {
 
         try {
-            String attendanceBatch = batch;
-            String attendanceSubject = subject;
-            String attendanceYear = year;
             Connection connection = jdbcUtil.createConnection();
 
             String tableName = subject + "_" + batch + "_" + year + "_WIFI_ATTENDANCE_TABLE";
@@ -34,7 +32,7 @@ public class AttendanceRepository {
 
             // TODO: FIX DUPLICATE EMAIL ENTRIES
 
-            String selectSql = "SELECT email FROM student_directory WHERE batch = " + "\'" + attendanceBatch + "\'";
+            String selectSql = "SELECT email FROM student_directory WHERE batch = " + "\'" + batch + "\'";
             Statement selectStatement = connection.createStatement();
             ResultSet resultSet = selectStatement.executeQuery(selectSql);
 
@@ -66,44 +64,28 @@ public class AttendanceRepository {
 
         if(createTable(year,batch,subject)){
             DateFormat today = new SimpleDateFormat("dd-MM-yyyy");
-            String todayDate = "date_" + today.format(new Date());
-            todayDate = todayDate.replace("-" , "_");
-            System.out.println(todayDate);
-
+            String todayDate = ("date_" + today.format(new Date())).replace("-" , "_");
 
             String q = "ALTER TABLE " + tableName + " ADD COLUMN IF NOT EXISTS \"" + todayDate + "\"  VARCHAR(255)";
             Statement statement = jdbcUtil.createConnection().createStatement();
             statement.executeUpdate(q);
 
-
             for (String key : data.keySet()) {
                 String value = data.get(key);
-                System.out.println("data aa gaya");
                 String q1 = "UPDATE " + tableName + " SET \"" + todayDate + "\" = ? WHERE email = ?";
 
                 PreparedStatement ps = jdbcUtil.createConnection().prepareStatement(q1);
 
-
-                if (value == "P") {
-                ps.setString(1, "P");
-                ps.setString(2, key);
-
-                }else if (value == "A") {
+                if (Objects.equals(value, "P")) {
+                    ps.setString(1, "P");
+                    ps.setString(2, key);
+                }else if (Objects.equals(value, "A")) {
                     ps.setString(1, "A");
                     ps.setString(2, key);
-
-
                 }
+
                 ps.executeUpdate();
-                }
-
-
-
-
-
-
-
-            System.out.println("Data saved");
+            }
 
         }else{
             System.out.println("Data not saved");

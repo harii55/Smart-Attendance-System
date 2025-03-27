@@ -1,5 +1,10 @@
 package com.backend.attendance.backend.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class WifiAdminStartRequest {
 
     private String subject;
@@ -17,36 +22,4 @@ public class WifiAdminStartRequest {
         this.monitoring = monitoring;
     }
 
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getBatch() {
-        return batch;
-    }
-
-    public void setBatch(String batch) {
-        this.batch = batch;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public Boolean getMonitoring() {
-        return monitoring;
-    }
-
-    public void setMonitoring(Boolean monitoring) {
-        this.monitoring = monitoring;
-    }
 }

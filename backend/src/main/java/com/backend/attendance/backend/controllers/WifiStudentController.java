@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/attendance/wifi/student")
 public class WifiStudentController {
@@ -19,13 +21,13 @@ public class WifiStudentController {
     public ResponseEntity<?> startMonitoring(@RequestBody WifiStudentRequest request) throws Exception {
         if(request.getIpAddress() != null && !request.getIpAddress().isEmpty() && request.getYear() != null && !request.getYear().isEmpty() && request.getBatchName() != null && !request.getBatchName().isEmpty() && request.getEmail() != null && !request.getEmail().isEmpty()) {
             WifiStudentResponse response = wifiStudentService.startMonitoring(request);
-            if (response.getMessage() == "year"){
+            if (Objects.equals(response.getMessage(), "year")){
                 return new ResponseEntity<>(response , HttpStatus.BAD_REQUEST);
             }
-            if (response.getMessage() == "batch"){
+            if (Objects.equals(response.getMessage(), "batch")){
                 return new ResponseEntity<>(response , HttpStatus.BAD_REQUEST);
             }
-            if (response.getMessage() == "email"){
+            if (Objects.equals(response.getMessage(), "email")){
                 return new ResponseEntity<>(response , HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity<>(response , HttpStatus.OK);
@@ -42,7 +44,4 @@ public class WifiStudentController {
             return ResponseEntity.badRequest().build();
         }
     }
-
-
-
 }

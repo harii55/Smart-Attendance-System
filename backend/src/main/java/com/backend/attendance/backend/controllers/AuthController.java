@@ -28,16 +28,14 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-
     @PostMapping("/login")
     public ResponseEntity<?> loginOrRegister(@RequestBody AuthRequest authRequest) throws Exception {
         return ResponseEntity.ok(authService.loginOrRegister(authRequest));
     }
 
-
     @PostMapping("/google")
-            public ResponseEntity<?> googleLogin(@RequestBody GoogleAuthRequest googleAuthRequest) throws Exception {
-                return ResponseEntity.ok(authService.googleLogIn(googleAuthRequest));
-            }
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleAuthRequest googleAuthRequest) throws Exception {
+        return ResponseEntity.ok(authService.googleLogIn(googleAuthRequest));
+    }
 
-        }
+}
