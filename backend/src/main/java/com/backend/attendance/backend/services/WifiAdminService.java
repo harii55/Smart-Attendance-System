@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class WifiAdminService {
@@ -27,30 +29,29 @@ public class WifiAdminService {
 
     @Setter
     @Getter
-    private HashMap<String, HashMap<String, ArrayList<String>>> monitoringStatusMap = new HashMap<>();
+    private HashMap<String, HashMap<String, String>> monitoringStatusMap = new HashMap<>();
 
-    public ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
+    public ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request){
         String year = request.getYear();
         String batch = request.getBatch();
         String subject = request.getSubject();
-        String status = request.getMonitoring().toString();
 
-        if (request.getMonitoring()) {
+        try {
 
-            HashMap<String, ArrayList<String>> monitoringStatusInnerMap = new HashMap<>();
-            ArrayList<String> monitoringStatusList = new ArrayList<>();
+            if (monitoringStatusMap.containsKey(year)) {
+                monitoringStatusMap.get(year).put(batch, subject);
+            } else {
+                monitoringStatusMap.put(year, new HashMap<>());
+                monitoringStatusMap.get(year).put(batch, subject);
+            }
 
-            monitoringStatusList.add(0,subject);
-            monitoringStatusList.add(1,status);
+            return ResponseEntity.ok(new WifiAdminStartResponse("true", "OK", 200, "Attendance Started"));
 
-            monitoringStatusInnerMap.put(batch,monitoringStatusList);
-            monitoringStatusMap.put(year,monitoringStatusInnerMap);
-
-            return ResponseEntity.ok(new WifiAdminStartResponse("true"));
-        }else{
-            monitoringStatusMap.get(year).remove(batch);
-            return ResponseEntity.ok(new WifiAdminStartResponse("false"));
+        }catch (Exception e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.internalServerError().body(new WifiAdminStartResponse("false", "Error", 500, "Failed to start attendance"));
         }
+
     }
 
     public ResponseEntity<?> stopMonitoring(@RequestBody WifiAdminStopRequest request) throws Exception {
@@ -61,17 +62,19 @@ public class WifiAdminService {
         try{
             if (monitoringStatusMap.containsKey(year) && monitoringStatusMap.get(year).containsKey(batch)) {
                 HashMap<String, String> data = wifiStudentService.getFilteredAttendanceMap(year, batch, subject);
-                System.out.println(data);
+//                System.out.println(data); // LOG: prints current Wi-Fi attendance data of the batch...
                 attendanceRepository.storeData(data, batch, subject, year);
-                return ResponseEntity.ok(new WifiAdminStopResponse("OK", "Attendance Stopped"));
+                monitoringStatusMap.get(year).remove(batch);
+                if (monitoringStatusMap.get(year).isEmpty()) {
+                    monitoringStatusMap.remove(year);
+                }
+                return ResponseEntity.ok(new WifiAdminStopResponse("true", "OK", "Attendance stopped", 200));
             }else{
-                return ResponseEntity.ok(new WifiAdminStopResponse("BAD REQUEST", "No Attendance to be stopped for current batch"));
+                return ResponseEntity.ok(new WifiAdminStopResponse("false", "BAD REQUEST", "No Attendance to stop", 400));
             }
-        }
-        catch(Exception e){
+        }catch(Exception e){
             System.out.println(e.getMessage());
+            return ResponseEntity.internalServerError().body(new WifiAdminStopResponse("false", "Internal Server Error", "Something went wrong", 500));
         }
-        return null;
     }
-
 }

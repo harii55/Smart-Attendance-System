@@ -10,16 +10,14 @@ public class WifiAdminStopRequest {
     private String subject;
     private String batch;
     private String year;
-    private Boolean monitoring;
 
     private WifiAdminStopRequest() {
     }
 
-    public WifiAdminStopRequest(String subject, String batch, Boolean monitoring) {
+    public WifiAdminStopRequest(String subject, String batch, String year) {
         this.subject = subject;
         this.batch = batch;
         this.year = year;
-        this.monitoring = monitoring;
     }
 
 

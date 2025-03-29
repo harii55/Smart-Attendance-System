@@ -10,11 +10,13 @@ public class WifiStudentResponse {
     private String message;
     private String ipAddress;
     private String status;
+    private int statusCodeValue;
 
-    public WifiStudentResponse(String ipAddress, String status, String message) {
+    public WifiStudentResponse(String ipAddress, String status, String message, int statusCodeValue) {
         this.ipAddress = ipAddress;
         this.status = status;
         this.message = message;
+        this.statusCodeValue = statusCodeValue;
     }
 
     private WifiStudentResponse() {

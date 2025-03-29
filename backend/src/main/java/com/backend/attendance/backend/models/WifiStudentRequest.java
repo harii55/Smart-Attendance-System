@@ -16,10 +16,9 @@ public class WifiStudentRequest {
     @Getter
     @Setter
     private String year;
-    private String subject;
 
 
-    public WifiStudentRequest(String email, String ipAddress, String batchName) {
+    public WifiStudentRequest(String email, String ipAddress, String batchName, String year) {
         this.email = email;
         this.ipAddress = ipAddress;
         this.batchName = batchName;

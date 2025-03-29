@@ -20,7 +20,7 @@ public class User {
     private String password;
     private String rollNumber;
 
-    public String getRollNumbeer() {
+    public String getRollNumber() {
         return rollNumber;
     }
 

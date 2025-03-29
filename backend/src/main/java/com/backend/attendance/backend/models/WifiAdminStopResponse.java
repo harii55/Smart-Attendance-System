@@ -6,13 +6,17 @@ import lombok.Setter;
 @Setter
 @Getter
 public class WifiAdminStopResponse {
-    String status;
-    String message;
+    private String success;
+    private String status;
+    private int statusCodeValue;
+    private String message;
 
     public WifiAdminStopResponse() {}
 
-    public WifiAdminStopResponse(String status, String message) {
+    public WifiAdminStopResponse(String success, String status, String message, int statusCodeValue) {
+        this.success = success;
         this.status = status;
+        this.statusCodeValue = statusCodeValue;
         this.message = message;
     }
 

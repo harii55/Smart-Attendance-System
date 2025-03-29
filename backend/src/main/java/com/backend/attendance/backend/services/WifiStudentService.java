@@ -30,66 +30,64 @@ public class WifiStudentService {
         String[] isValidRequestCheck = studentDirectory.checkForBatchAndYear(email, batch, year);
 
         if (isValidRequestCheck[0].equals("false")) {
-            return new WifiStudentResponse("192.168.0.0" , "false" , "email");
+            return new WifiStudentResponse("192.168.0.0" , "BAD REQUEST" , "email", 400);
         }
 
         if (isValidRequestCheck[1].equals("false")) {
-            return new WifiStudentResponse("192.168.0.0" , "false" , "batch");
+            return new WifiStudentResponse("192.168.0.0" , "BAD REQUEST" , "batch", 400);
         }
 
         if (isValidRequestCheck[2].equals("false")) {
-            return new WifiStudentResponse("192.168.0.0" , "false" , "year");
+            return new WifiStudentResponse("192.168.0.0" , "BAD REQUEST" , "year", 400);
         }
 
         try{
 //            TODO: Check existence of ip in range... (later)
             HashMap<?,?> monitoringStatusMap = wifiAdminService.getMonitoringStatusMap().get(year);
 
-            if(monitoringStatusMap != null){
-                ArrayList<String> statusList = (ArrayList<String>) monitoringStatusMap.get(batch);
-                if(statusList != null){
-                    String subject = statusList.get(0);
-                    String status = statusList.get(1);
-                    if (status != null && status.equals("true")) {
-                        if (attendanceMap.containsKey(year)){
-                            if (attendanceMap.get(year).containsKey(batch)){
-                                if (attendanceMap.get(year).get(batch).containsKey(subject)){
-                                    attendanceMap.get(year).get(batch).get(subject).put(email, "P");
-                                }else{
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put(email, "P");
-                                    attendanceMap.get(year).get(batch).put(subject, data);
-                                }
+            if(monitoringStatusMap != null && !monitoringStatusMap.isEmpty() && monitoringStatusMap.containsKey(batch)){
+                String subject = monitoringStatusMap.get(batch).toString();
+                if(subject != null){
+                    if (attendanceMap.containsKey(year)){
+                        if (attendanceMap.get(year).containsKey(batch)){
+                            if (attendanceMap.get(year).get(batch).containsKey(subject)){
+                                attendanceMap.get(year).get(batch).get(subject).put(email, "P");
                             }else{
-                                HashMap<String, HashMap<String, String>> data = new HashMap<>();
-                                HashMap<String, String> attendanceOfStudent = new HashMap<>();
-                                attendanceOfStudent.put(email, "P");
-                                data.put(subject, attendanceOfStudent);
-                                attendanceMap.get(year).put(batch, data);
+                                HashMap<String, String> data = new HashMap<>();
+                                data.put(email, "P");
+                                attendanceMap.get(year).get(batch).put(subject, data);
                             }
                         }else{
-                            HashMap<String, HashMap<String, HashMap<String, String>>> data = new HashMap<>();
-                            HashMap<String, HashMap<String, String>> batchWithAttendance = new HashMap<>();
+                            HashMap<String, HashMap<String, String>> data = new HashMap<>();
                             HashMap<String, String> attendanceOfStudent = new HashMap<>();
                             attendanceOfStudent.put(email, "P");
-                            batchWithAttendance.put(subject, attendanceOfStudent);
-                            data.put(batch, batchWithAttendance);
-                            attendanceMap.put(year, data);
+                            data.put(subject, attendanceOfStudent);
+                            attendanceMap.get(year).put(batch, data);
                         }
+                    }else{
+                        HashMap<String, HashMap<String, HashMap<String, String>>> data = new HashMap<>();
+                        HashMap<String, HashMap<String, String>> batchWithAttendance = new HashMap<>();
+                        HashMap<String, String> attendanceOfStudent = new HashMap<>();
+                        attendanceOfStudent.put(email, "P");
+                        batchWithAttendance.put(subject, attendanceOfStudent);
+                        data.put(batch, batchWithAttendance);
+                        attendanceMap.put(year, data);
                     }
                 }
             }else{
                 System.out.println("Attendance Not Found");
             }
-            System.out.println(attendanceMap);
+            return new WifiStudentResponse("192.168.0.0" , "OK", "Attendance marked successfully", 200);
+
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new WifiStudentResponse("192.168.0.0" , "ERROR" , "Internal Server Error", 500);
         }
-        return new WifiStudentResponse("192.168.0.0" , "true", "success");
+
     }
 
     public WifiStudentResponse stopMonitoring(@RequestBody WifiStudentRequest wifiMonitoringRequest) throws Exception {
-        return new WifiStudentResponse("192.168.0.0" , "false", "success");
+        return new WifiStudentResponse("192.168.0.0" , "OK", "Attendance marked successfully", 200);
     }
 
     public HashMap<String, String> getFilteredAttendanceMap(String year, String batch, String subject) {

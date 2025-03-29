@@ -25,15 +25,11 @@ public class WifiAdminController {
 
     @PostMapping("/start")
     ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
-       if(request.getMonitoring()){
-           return ResponseEntity.ok(wifiAdminService.startMonitoring(request));
-       }else {
-           return ResponseEntity.ok(wifiAdminService.startMonitoring(request));
-       }
+        return wifiAdminService.startMonitoring(request);
     }
 
     @PostMapping("/stop")
     ResponseEntity<?> stopMonitoring(@RequestBody WifiAdminStopRequest request) throws  Exception{
-        return ResponseEntity.ok(wifiAdminService.stopMonitoring(request));
+        return wifiAdminService.stopMonitoring(request);
     }
 }

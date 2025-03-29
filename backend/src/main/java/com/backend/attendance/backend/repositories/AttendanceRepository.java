@@ -36,21 +36,17 @@ public class AttendanceRepository {
             Statement selectStatement = connection.createStatement();
             ResultSet resultSet = selectStatement.executeQuery(selectSql);
 
-
             try {
                 while (resultSet.next()) {
                     String studentEmail = resultSet.getString("email");
-                    String insertSql = "INSERT INTO " + tableName + " (email) VALUES (\'" + studentEmail + "\') ";
+                    String insertSql = "INSERT INTO " + tableName + " (email) VALUES (\'" + studentEmail + "\') ON CONFLICT DO NOTHING";
                     Statement insertStatement = connection.createStatement();
                     insertStatement.executeUpdate(insertSql);
                 }
+                return true;
             }catch (SQLException e) {
-                System.out.println(e.getMessage());
                 return true;
             }
-
-
-            return true;
 
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -90,9 +86,5 @@ public class AttendanceRepository {
         }else{
             System.out.println("Data not saved");
         }
-
-
     }
-
-
 }

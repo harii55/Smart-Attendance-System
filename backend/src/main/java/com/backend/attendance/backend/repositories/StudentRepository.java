@@ -14,7 +14,6 @@ public class StudentRepository {
     @Autowired
     private JdbcUtil jdbcUtil;
 
-
     public Boolean lookforEmail(String email) throws SQLException {
         Connection connection = jdbcUtil.createConnection();
         String sql = "select * from student_directory where email = '" + email + "'";
