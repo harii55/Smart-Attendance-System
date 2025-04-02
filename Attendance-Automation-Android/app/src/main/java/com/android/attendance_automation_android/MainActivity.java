@@ -105,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendLoginRequest(String email, String password, String ip) {
+        // Get SSID and BSSID
+        String ssid = WifiHelper.getSSID(this);
+        String bssid = WifiHelper.getBSSID(this);
+
+        Log.i("WIFI_INFO", "SSID: " + ssid + ", BSSID: " + bssid);
+
         LoginRequest request = new LoginRequest(email, password, ip);
         Call<LoginResponse> call = authApi.login(request);
 
@@ -117,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(MainActivity.this, MarkAttendance.class);
                     intent.putExtra("TOKEN", token);
+                    intent.putExtra("SSID", ssid);
+                    intent.putExtra("BSSID", bssid);
                     startActivity(intent);
                     finish();
                 } else {
