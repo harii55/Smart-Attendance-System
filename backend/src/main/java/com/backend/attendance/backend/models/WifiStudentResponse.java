@@ -8,12 +8,10 @@ import lombok.Setter;
 public class WifiStudentResponse {
 
     private String message;
-    private String ipAddress;
     private String status;
     private int statusCodeValue;
 
-    public WifiStudentResponse(String ipAddress, String status, String message, int statusCodeValue) {
-        this.ipAddress = ipAddress;
+    public WifiStudentResponse(String status, String message, int statusCodeValue) {
         this.status = status;
         this.message = message;
         this.statusCodeValue = statusCodeValue;

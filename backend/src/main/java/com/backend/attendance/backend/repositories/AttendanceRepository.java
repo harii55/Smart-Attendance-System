@@ -1,7 +1,6 @@
 package com.backend.attendance.backend.repositories;
 
 import com.backend.attendance.backend.utils.JdbcUtil;
-import com.google.type.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -9,10 +8,8 @@ import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class AttendanceRepository {
@@ -54,7 +51,7 @@ public class AttendanceRepository {
         }
     }
 
-    public void storeData(HashMap<String,String> data, String batch, String subject, String year) throws SQLException {
+    public void storeData(ConcurrentHashMap<String, String> data, String batch, String subject, String year) throws SQLException {
 
         String tableName = subject + "_" + batch + "_" + year + "_WIFI_ATTENDANCE_TABLE";
 

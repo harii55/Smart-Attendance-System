@@ -19,7 +19,7 @@ public class WifiStudentController {
 
     @PostMapping("/start")
     public ResponseEntity<?> startMonitoring(@RequestBody WifiStudentRequest request) throws Exception {
-        if(request.getIpAddress() != null && !request.getIpAddress().isEmpty() && request.getYear() != null && !request.getYear().isEmpty() && request.getBatchName() != null && !request.getBatchName().isEmpty() && request.getEmail() != null && !request.getEmail().isEmpty()) {
+        if(request.getBssid() != null && !request.getBssid().isEmpty() && request.getYear() != null && !request.getYear().isEmpty() && request.getBatchName() != null && !request.getBatchName().isEmpty() && request.getEmail() != null && !request.getEmail().isEmpty()) {
             WifiStudentResponse response = wifiStudentService.startMonitoring(request);
             if (Objects.equals(response.getMessage(), "year")){
                 return new ResponseEntity<>(response , HttpStatus.BAD_REQUEST);
@@ -38,7 +38,7 @@ public class WifiStudentController {
 
     @PostMapping("/stop")
     public ResponseEntity<?> stopMonitoring(@RequestBody WifiStudentRequest request) throws Exception {
-        if(request.getIpAddress() != null && !request.getIpAddress().isEmpty() && request.getYear() != null && !request.getYear().isEmpty() && request.getBatchName() != null && !request.getBatchName().isEmpty() && request.getEmail() != null && !request.getEmail().isEmpty()) {
+        if(request.getBssid() != null && !request.getBssid().isEmpty() && request.getYear() != null && !request.getYear().isEmpty() && request.getBatchName() != null && !request.getBatchName().isEmpty() && request.getEmail() != null && !request.getEmail().isEmpty()) {
             return ResponseEntity.ok(wifiStudentService.stopMonitoring(request));
         }else{
             return ResponseEntity.badRequest().build();

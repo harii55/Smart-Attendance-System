@@ -9,7 +9,7 @@ public class WifiStudentRequest {
     private String email;
     @Getter
     @Setter
-    private String ipAddress;
+    private String bssid;
     @Getter
     @Setter
     private String batchName;
@@ -18,9 +18,9 @@ public class WifiStudentRequest {
     private String year;
 
 
-    public WifiStudentRequest(String email, String ipAddress, String batchName, String year) {
+    public WifiStudentRequest(String email, String bssid, String batchName, String year) {
         this.email = email;
-        this.ipAddress = ipAddress;
+        this.bssid = bssid;
         this.batchName = batchName;
         this.year = year;
     }

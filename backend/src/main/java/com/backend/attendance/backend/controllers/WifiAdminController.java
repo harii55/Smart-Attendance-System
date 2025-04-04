@@ -17,11 +17,8 @@ import java.util.HashMap;
 public class WifiAdminController {
 
     @Autowired
-    private final WifiAdminService wifiAdminService;
+    private WifiAdminService wifiAdminService;
 
-    public WifiAdminController(WifiAdminService wifiAdminService) {
-        this.wifiAdminService = wifiAdminService;
-    }
 
     @PostMapping("/start")
     ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request) throws Exception {
