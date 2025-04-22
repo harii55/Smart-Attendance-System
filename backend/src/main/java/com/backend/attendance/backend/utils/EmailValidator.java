@@ -15,4 +15,8 @@ public class EmailValidator {
         }
         return Optional.empty();
     }
+
+    public static boolean isValidEmail(String email){
+        return email.endsWith("@sst.scaler.com");
+    }
 }
