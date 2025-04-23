@@ -72,7 +72,10 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
         String batch = studentProvider.getStudentDirectory().get(email).getBatch();
         String year = studentProvider.getStudentDirectory().get(email).getYear();
+        System.out.println(year);
+        System.out.println(batch);
         String subject = attendanceProvider.getSubjectMap().get(year + ":" + batch);
+        System.out.println(subject);
         String attendanceSessionKey = year + ":" + batch + ":" + subject;
 
         if(!attendanceProvider.getMonitoringStatusMap().containsKey(attendanceSessionKey)){

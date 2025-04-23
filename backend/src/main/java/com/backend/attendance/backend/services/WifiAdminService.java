@@ -54,7 +54,7 @@ public class WifiAdminService {
         String subjectKey = year + ":" + batch;
         try {
             if (!subjectMap.containsKey(subjectKey)) {
-                subjectMap.put(subjectKey, attendanceStatus);
+                subjectMap.put(subjectKey, subject);
             }
             if (!monitoringStatusMap.containsKey(attendanceStatus)) {
                 monitoringStatusMap.put(attendanceStatus, System.currentTimeMillis());
