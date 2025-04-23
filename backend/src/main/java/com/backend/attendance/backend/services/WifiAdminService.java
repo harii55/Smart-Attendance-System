@@ -2,27 +2,17 @@ package com.backend.attendance.backend.services;
 
 import com.backend.attendance.backend.models.*;
 import com.backend.attendance.backend.repositories.AttendanceRepository;
-import com.backend.attendance.backend.repositories.StudentRepository;
 import com.backend.attendance.backend.utils.AttendanceProvider;
 import com.backend.attendance.backend.utils.StudentProvider;
 import com.backend.attendance.backend.websockets.SocketConnectionHandler;
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
 public class WifiAdminService {
@@ -54,7 +44,7 @@ public class WifiAdminService {
         String subjectKey = year + ":" + batch;
         try {
             if (!subjectMap.containsKey(subjectKey)) {
-                subjectMap.put(subjectKey, attendanceStatus);
+                subjectMap.put(subjectKey, subject);
             }
             if (!monitoringStatusMap.containsKey(attendanceStatus)) {
                 monitoringStatusMap.put(attendanceStatus, System.currentTimeMillis());
