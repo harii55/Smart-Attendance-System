@@ -4,6 +4,7 @@ import com.backend.attendance.backend.models.StudentSession;
 import com.backend.attendance.backend.repositories.AccessPointRepository;
 import com.backend.attendance.backend.repositories.StudentRepository;
 import com.backend.attendance.backend.utils.AttendanceProvider;
+import com.backend.attendance.backend.utils.StudentProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     private AccessPointRepository accessPointRepository;
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private StudentProvider studentProvider;
 
 
     ConcurrentHashMap<String, StudentSession> studentSessionMap = new ConcurrentHashMap<>();
@@ -59,41 +62,21 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     {
         JsonObject obj = gson.fromJson(message.getPayload().toString(), JsonObject.class);
         String email = obj.get("email").getAsString();
-        String batch = obj.get("batch").getAsString();
-        String year = obj.get("year").getAsString();
-        String subject = obj.get("subject").getAsString();
         String bssid = obj.get("bssid").getAsString();
 
-        String attendanceSessionKey = year + ":" + batch + ":" + subject;
-
-        if(!attendanceProvider.getMonitoringStatusMap().containsKey(attendanceSessionKey)){
-            session.sendMessage(new TextMessage("Class not started for you yet."));
-            session.close(CloseStatus.NOT_ACCEPTABLE);
-            return;
-        }
-
-        if(!studentRepository.lookforEmail(email)) {
+        if (!studentProvider.getStudentDirectory().containsKey(email)) {
             session.sendMessage(new TextMessage("Email address does not exist."));
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
         }
 
-        String[] checks = studentRepository.checkForBatchAndYear(email, batch, year);
+        String batch = studentProvider.getStudentDirectory().get(email).getBatch();
+        String year = studentProvider.getStudentDirectory().get(email).getYear();
+        String subject = attendanceProvider.getSubjectMap().get(year + ":" + batch);
+        String attendanceSessionKey = year + ":" + batch + ":" + subject;
 
-        if (checks[0].equals("false")){
-            session.sendMessage(new TextMessage("Email not registered with this batch"));
-            session.close(CloseStatus.NOT_ACCEPTABLE);
-            return;
-        }
-
-        if (checks[1].equals("false")){
-            session.sendMessage(new TextMessage("You have selected wrong batch"));
-            session.close(CloseStatus.NOT_ACCEPTABLE);
-            return;
-        }
-
-        if (checks[2].equals("false")){
-            session.sendMessage(new TextMessage("You have selected wrong year"));
+        if(!attendanceProvider.getMonitoringStatusMap().containsKey(attendanceSessionKey)){
+            session.sendMessage(new TextMessage("Class not started for you yet."));
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
         }

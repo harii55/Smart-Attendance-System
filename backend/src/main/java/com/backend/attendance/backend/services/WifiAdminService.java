@@ -4,17 +4,20 @@ import com.backend.attendance.backend.models.*;
 import com.backend.attendance.backend.repositories.AttendanceRepository;
 import com.backend.attendance.backend.repositories.StudentRepository;
 import com.backend.attendance.backend.utils.AttendanceProvider;
+import com.backend.attendance.backend.utils.StudentProvider;
 import com.backend.attendance.backend.websockets.SocketConnectionHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,12 +34,16 @@ public class WifiAdminService {
 
     @Autowired
     private AttendanceProvider attendanceProvider;
+    @Autowired
+    private StudentProvider studentProvider;
 
     ConcurrentHashMap<String, Long> monitoringStatusMap;
+    ConcurrentHashMap<String, String> subjectMap;
 
     @PostConstruct
     public void init() {
         this.monitoringStatusMap = attendanceProvider.getMonitoringStatusMap();
+        this.subjectMap = attendanceProvider.getSubjectMap();
     }
 
     public ResponseEntity<?> startMonitoring(@RequestBody WifiAdminStartRequest request){
@@ -44,12 +51,16 @@ public class WifiAdminService {
         String batch = request.getBatch();
         String subject = request.getSubject();
         String attendanceStatus = year + ":" + batch + ":" + subject;
+        String subjectKey = year + ":" + batch;
         try {
-
+            if (!subjectMap.containsKey(subjectKey)) {
+                subjectMap.put(subjectKey, attendanceStatus);
+            }
             if (!monitoringStatusMap.containsKey(attendanceStatus)) {
                 monitoringStatusMap.put(attendanceStatus, System.currentTimeMillis());
             }
             attendanceProvider.setMonitoringStatusMap(monitoringStatusMap);
+            attendanceProvider.setSubjectMap(subjectMap);
             System.out.println(monitoringStatusMap);
             return ResponseEntity.ok(new WifiAdminStartResponse("true", "OK", 200, "Attendance Started"));
 
@@ -98,6 +109,16 @@ public class WifiAdminService {
         }catch (Exception e) {
             System.err.println(e.getMessage());
             return ResponseEntity.internalServerError().body(new WifiAdminStopResponse("false", "Internal Server Error", "Something went wrong", 500));
+        }
+    }
+
+    @Scheduled(cron = "0 0 3 * * *")
+    public void refreshCache() throws SQLException {
+        try{
+            studentProvider.LoadStudentDirectory();
+            System.out.println("Student Directory cache refreshed");
+        }catch (Exception e) {
+            System.err.println("Student cache refresh failed : " + e.getMessage());
         }
     }
 }

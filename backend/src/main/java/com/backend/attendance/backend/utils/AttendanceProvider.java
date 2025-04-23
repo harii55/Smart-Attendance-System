@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AttendanceProvider {
 
     private ConcurrentHashMap<String, Long> monitoringStatusMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, String> subjectMap = new ConcurrentHashMap<>();
 
     public ConcurrentHashMap<String, Long> getMonitoringStatusMap() {
         return monitoringStatusMap;
@@ -14,5 +15,13 @@ public class AttendanceProvider {
 
     public void setMonitoringStatusMap(ConcurrentHashMap<String, Long> monitoringStatusMap) {
         this.monitoringStatusMap = monitoringStatusMap;
+    }
+
+    public ConcurrentHashMap<String, String> getSubjectMap() {
+        return subjectMap;
+    }
+
+    public void setSubjectMap(ConcurrentHashMap<String, String> subjectMap) {
+        this.subjectMap = subjectMap;
     }
 }
