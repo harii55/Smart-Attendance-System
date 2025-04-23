@@ -2,6 +2,7 @@ package com.backend.attendance.backend.websockets;
 
 import com.backend.attendance.backend.models.StudentSession;
 import com.backend.attendance.backend.repositories.AccessPointRepository;
+import com.backend.attendance.backend.repositories.StudentRepository;
 import com.backend.attendance.backend.utils.AttendanceProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -25,6 +26,8 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     private  AttendanceProvider attendanceProvider;
     @Autowired
     private AccessPointRepository accessPointRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
 
     ConcurrentHashMap<String, StudentSession> studentSessionMap = new ConcurrentHashMap<>();
@@ -65,6 +68,32 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
         if(!attendanceProvider.getMonitoringStatusMap().containsKey(attendanceSessionKey)){
             session.sendMessage(new TextMessage("Class not started for you yet."));
+            session.close(CloseStatus.NOT_ACCEPTABLE);
+            return;
+        }
+
+        if(!studentRepository.lookforEmail(email)) {
+            session.sendMessage(new TextMessage("Email address does not exist."));
+            session.close(CloseStatus.NOT_ACCEPTABLE);
+            return;
+        }
+
+        String[] checks = studentRepository.checkForBatchAndYear(email, batch, year);
+
+        if (checks[0].equals("false")){
+            session.sendMessage(new TextMessage("Email not registered with this batch"));
+            session.close(CloseStatus.NOT_ACCEPTABLE);
+            return;
+        }
+
+        if (checks[1].equals("false")){
+            session.sendMessage(new TextMessage("You have selected wrong batch"));
+            session.close(CloseStatus.NOT_ACCEPTABLE);
+            return;
+        }
+
+        if (checks[2].equals("false")){
+            session.sendMessage(new TextMessage("You have selected wrong year"));
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
         }
