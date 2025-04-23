@@ -1,11 +1,10 @@
 package com.backend.attendance.backend.services;
 
-import com.backend.attendance.backend.models.WifiAdminStartRequest;
-import com.backend.attendance.backend.models.WifiAdminStartResponse;
-import com.backend.attendance.backend.models.WifiAdminStopRequest;
-import com.backend.attendance.backend.models.WifiAdminStopResponse;
+import com.backend.attendance.backend.models.*;
 import com.backend.attendance.backend.repositories.AttendanceRepository;
+import com.backend.attendance.backend.repositories.StudentRepository;
 import com.backend.attendance.backend.utils.AttendanceProvider;
+import com.backend.attendance.backend.websockets.SocketConnectionHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,19 +26,16 @@ public class WifiAdminService {
 
     @Autowired
     private AttendanceRepository attendanceRepository;
-
     @Autowired
-    private WifiStudentService wifiStudentService;
+    private SocketConnectionHandler socketConnectionHandler;
 
     @Autowired
     private AttendanceProvider attendanceProvider;
 
-    ConcurrentHashMap<String, ConcurrentHashMap<String, String>> monitoringStatusMap;
-    ConcurrentHashMap<String, ConcurrentHashMap<String, ConcurrentHashMap<String, ConcurrentHashMap<String, String>>>> attendanceMap;
+    ConcurrentHashMap<String, Long> monitoringStatusMap;
 
     @PostConstruct
     public void init() {
-        this.attendanceMap = attendanceProvider.getAttendanceMap();
         this.monitoringStatusMap = attendanceProvider.getMonitoringStatusMap();
     }
 
@@ -47,16 +43,12 @@ public class WifiAdminService {
         String year = request.getYear();
         String batch = request.getBatch();
         String subject = request.getSubject();
-
+        String attendanceStatus = year + ":" + batch + ":" + subject;
         try {
 
-            if (monitoringStatusMap.containsKey(year)) {
-                monitoringStatusMap.get(year).put(batch, subject);
-            } else {
-                monitoringStatusMap.put(year, new ConcurrentHashMap<>());
-                monitoringStatusMap.get(year).put(batch, subject);
+            if (!monitoringStatusMap.containsKey(attendanceStatus)) {
+                monitoringStatusMap.put(attendanceStatus, System.currentTimeMillis());
             }
-
             attendanceProvider.setMonitoringStatusMap(monitoringStatusMap);
             System.out.println(monitoringStatusMap);
             return ResponseEntity.ok(new WifiAdminStartResponse("true", "OK", 200, "Attendance Started"));
@@ -71,23 +63,40 @@ public class WifiAdminService {
         String year = request.getYear();
         String batch = request.getBatch();
         String subject = request.getSubject();
+        String attendanceStatus = year + ":" + batch + ":" + subject;
 
         try{
-            if (monitoringStatusMap.containsKey(year) && monitoringStatusMap.get(year).containsKey(batch)) {
-                ConcurrentHashMap<String, String> data = wifiStudentService.getFilteredAttendanceMap(year, batch, subject);
-//              System.out.println(data); // LOG: prints current Wi-Fi attendance data of the batch...
-                attendanceRepository.storeData(data, batch, subject, year);
-                monitoringStatusMap.get(year).remove(batch);
-                if (monitoringStatusMap.get(year).isEmpty()) {
-                    monitoringStatusMap.remove(year);
-                }
-                attendanceProvider.setMonitoringStatusMap(monitoringStatusMap);
-                return ResponseEntity.ok(new WifiAdminStopResponse("true", "OK", "Attendance stopped", 200));
-            }else{
-                return ResponseEntity.ok(new WifiAdminStopResponse("false", "BAD REQUEST", "No Attendance to stop", 400));
+            if(!monitoringStatusMap.containsKey(attendanceStatus)) {
+                return ResponseEntity.ok(new WifiAdminStopResponse("false" , "BAD REQUEST" , "No attendance to stop" , 400));
             }
-        }catch(Exception e){
-            System.out.println(e.getMessage());
+
+            Long startTime = monitoringStatusMap.get(attendanceStatus);
+            Long stopTime = System.currentTimeMillis();
+            Long classDuration = stopTime - startTime;
+
+            ConcurrentHashMap<String, StudentSession> filteredStudentSessionMap = socketConnectionHandler.getStudentSessionMap(year, batch, subject);
+            ConcurrentHashMap<String, String> finalAttendanceMap = new ConcurrentHashMap<>();
+            double attendanceThreshold = 0.75;
+
+            for (StudentSession s : filteredStudentSessionMap.values()) {
+                long now = System.currentTimeMillis();
+                long endingTimePart = now - s.getLastPingTime();
+                long totalConnectionTime = s.getTotalConnectionTime() + endingTimePart;
+
+                if (totalConnectionTime >= attendanceThreshold * classDuration) {
+                    finalAttendanceMap.put(s.getEmail(), "P");
+                }else{
+                    finalAttendanceMap.put(s.getEmail(), "A");
+                }
+
+            }
+            attendanceRepository.storeData(finalAttendanceMap, batch , subject, year);
+            socketConnectionHandler.stopMonitoring(year, batch, subject);
+            monitoringStatusMap.remove(attendanceStatus);
+            attendanceProvider.setMonitoringStatusMap(monitoringStatusMap);
+            return ResponseEntity.ok(new WifiAdminStopResponse("true", "OK", "Attendance Stored", 200));
+        }catch (Exception e) {
+            System.err.println(e.getMessage());
             return ResponseEntity.internalServerError().body(new WifiAdminStopResponse("false", "Internal Server Error", "Something went wrong", 500));
         }
     }

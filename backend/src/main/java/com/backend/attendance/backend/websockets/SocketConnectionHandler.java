@@ -1,16 +1,10 @@
 package com.backend.attendance.backend.websockets;
 
 import com.backend.attendance.backend.models.StudentSession;
-import com.backend.attendance.backend.models.WifiStudentRequest;
 import com.backend.attendance.backend.repositories.AccessPointRepository;
-import com.backend.attendance.backend.services.WifiAdminService;
 import com.backend.attendance.backend.utils.AttendanceProvider;
-import com.google.api.client.json.Json;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -19,12 +13,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
