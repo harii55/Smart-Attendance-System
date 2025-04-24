@@ -84,4 +84,12 @@ public class AttendanceRepository {
             System.out.println("Data not saved");
         }
     }
+
+    public ResultSet getStudentAttendance(String email, String year, String batch, String subject) throws SQLException {
+        String tableName = subject + "_" + batch + "_" + year + "_WIFI_ATTENDANCE_TABLE";
+        String query = "SELECT * FROM " + tableName + " WHERE email = " + "\'" + email + "\'";
+        Statement statement = jdbcUtil.createConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        return resultSet;
+    }
 }

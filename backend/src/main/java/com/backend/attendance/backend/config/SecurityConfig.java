@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/attendance/auth/**").permitAll()
                         .requestMatchers("attendance/wifi/**").permitAll()
+                        .requestMatchers("attendance/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
