@@ -7,11 +7,19 @@ import com.backend.attendance.backend.utils.StudentProvider;
 import com.backend.attendance.backend.websockets.SocketConnectionHandler;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -110,5 +118,49 @@ public class WifiAdminService {
         }catch (Exception e) {
             System.err.println("Student cache refresh failed : " + e.getMessage());
         }
+    }
+
+
+    public ResponseEntity<?> adminGetAttendance(String year, String batch, String subject) throws SQLException {
+
+        if(year==null || batch==null || subject ==null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        ResultSet getAttendance = attendanceRepository.getAllAttendance(year, batch, subject);
+        ResultSetMetaData metaData = getAttendance.getMetaData();
+
+        int columnCnt = metaData.getColumnCount();
+        String[] columnNames = new String[columnCnt];
+
+        for (int i = 1; i <= columnCnt; i++) {
+            columnNames[i-1] = metaData.getColumnName(i);
+        }
+        System.out.println(Arrays.toString(columnNames));
+        HashMap<String, ArrayList<String>> studentAttendance = new HashMap<>();
+
+        while( getAttendance.next() ) {
+            ArrayList<String> attendanceList = new ArrayList<>();
+            String email = getAttendance.getString("email");
+
+            for (int i = 1; i < columnNames.length; i++) {
+                attendanceList.add(getAttendance.getString(columnNames[i]));
+
+            }
+            studentAttendance.put(email, attendanceList);
+        }
+
+        AdminGetAttendanceResponse adminGetAttendanceResponse = new AdminGetAttendanceResponse();
+        adminGetAttendanceResponse.setStudentAttendance(studentAttendance);
+        adminGetAttendanceResponse.setBatch(batch);
+        adminGetAttendanceResponse.setSubject(subject);
+        adminGetAttendanceResponse.setYear(year);
+        adminGetAttendanceResponse.setColumnNames(columnNames);
+
+        if(getAttendance==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+            return ResponseEntity.ok(adminGetAttendanceResponse);
+
     }
 }

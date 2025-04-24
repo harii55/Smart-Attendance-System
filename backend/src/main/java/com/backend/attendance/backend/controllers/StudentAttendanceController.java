@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 
 @RestController
-@RequestMapping("/attendance/get_attendance")
+@RequestMapping("/attendance/student")
 public class StudentAttendanceController {
 
     @Autowired
     private StudentGetAttendanceService studentGetAttendanceService;
 
     @GetMapping
-            ("/student")
+            ("/get_attendance")
     public ResponseEntity<?> getStudentAttendance(@RequestBody StudentGetAttendanceRequest request) throws SQLException {
         return studentGetAttendanceService.studentGetAttendance(request.getEmail(), request.getYear(), request.getBatch(), request.getSubject());
     }

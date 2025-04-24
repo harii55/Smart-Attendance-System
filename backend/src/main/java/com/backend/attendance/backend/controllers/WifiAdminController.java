@@ -6,10 +6,7 @@ import com.backend.attendance.backend.utils.StudentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +19,8 @@ public class WifiAdminController {
     private WifiAdminService wifiAdminService;
     @Autowired
     private StudentProvider studentProvider;
+
+
 
 
     @PostMapping("/start")
@@ -44,4 +43,10 @@ public class WifiAdminController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student directory refresh failed due to : " + e.getMessage());
         }
     }
+
+    @GetMapping("/get_attendance")
+    ResponseEntity<?> adminGetAttendance(@RequestBody AdminGetAttendanceRequest request) throws Exception {
+        return wifiAdminService.adminGetAttendance(request.getYear(), request.getBatch(), request.getSubject());
+    }
+
 }

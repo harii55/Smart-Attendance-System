@@ -92,4 +92,13 @@ public class AttendanceRepository {
         ResultSet resultSet = statement.executeQuery(query);
         return resultSet;
     }
+
+    public ResultSet getAllAttendance(String year, String batch, String subject) throws SQLException {
+        String tableName = subject + "_" + batch + "_" + year + "_WIFI_ATTENDANCE_TABLE";
+        String query = "SELECT * FROM " + tableName;
+
+        Statement statement = jdbcUtil.createConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery(query);
+        return resultSet;
+    }
 }
