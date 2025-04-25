@@ -28,8 +28,6 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     @Autowired
     private AccessPointRepository accessPointRepository;
     @Autowired
-    private StudentRepository studentRepository;
-    @Autowired
     private StudentProvider studentProvider;
 
 
@@ -52,6 +50,7 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
                 long now = System.currentTimeMillis();
                 studentSession.setTotalConnectionTime(studentSession.getTotalConnectionTime() + (now - studentSession.getLastPingTime()));
                 studentSession.setLastPingTime(now);
+                studentSession.setIsConnected(false);
             }
         }
     }
@@ -94,13 +93,19 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
         StudentSession existingSession = studentSessionMap.get(email);
         if (existingSession == null) {
-            StudentSession newStudentSession = new StudentSession(email, bssid, now, 0L, session, batch, year, subject);
+            StudentSession newStudentSession = new StudentSession(email, bssid, now, 0L, session, batch, year, subject, true);
             newStudentSession.setLastPingTime(now);
             studentSessionMap.put(email, newStudentSession);
         }else{
+
             Long duration = now - existingSession.getLastPingTime();
-            existingSession.setTotalConnectionTime(existingSession.getTotalConnectionTime() + duration);
-            existingSession.setLastPingTime(now);
+            if (existingSession.getIsConnected()) {
+                existingSession.setTotalConnectionTime(existingSession.getTotalConnectionTime() + duration);
+                existingSession.setLastPingTime(now);
+            }else{
+                existingSession.setLastPingTime(now);
+                existingSession.setIsConnected(true);
+            }
         }
     }
 

@@ -12,8 +12,9 @@ public class StudentSession {
     String batch;
     String year;
     String subject;
+    Boolean isConnected;
 
-    public StudentSession(String email, String bssid, Long startTime, Long totalConnectionTime, WebSocketSession session, String batch, String year, String subject) {
+    public StudentSession(String email, String bssid, Long startTime, Long totalConnectionTime, WebSocketSession session, String batch, String year, String subject, Boolean isConnected) {
         this.email = email;
         this.bssid = bssid;
         this.connectionStartTime = startTime;
@@ -22,6 +23,7 @@ public class StudentSession {
         this.batch = batch;
         this.year = year;
         this.subject = subject;
+        this.isConnected = isConnected;
     }
 
     public String getEmail() {
@@ -96,4 +98,10 @@ public class StudentSession {
         this.lastPingTime = lastPingTime;
     }
 
+    public Boolean getIsConnected() {
+        return isConnected;
+    }
+    public void setIsConnected(Boolean isConnected) {
+        this.isConnected = isConnected;
+    }
 }
