@@ -8,6 +8,7 @@ import com.backend.attendance.backend.repositories.StudentRepository;
 import com.backend.attendance.backend.repositories.UserRepository;
 import com.backend.attendance.backend.utils.EmailValidator;
 import com.backend.attendance.backend.utils.JwtUtil;
+import com.backend.attendance.backend.utils.StudentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +33,9 @@ public class AuthService {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private StudentProvider studentProvider;
+
 
     public ResponseEntity<?> loginOrRegister(@RequestBody AuthRequest authRequest) throws Exception {
 
@@ -47,7 +51,7 @@ public class AuthService {
             return ResponseEntity.badRequest().body("Invalid email format");
         }
 
-        if (studentRepository.lookforEmail(email)) {
+        if (studentProvider.getStudentDirectory().containsKey(email)) {
 
             Optional<User> userOptional = userRepository.findByEmail(email);
 

@@ -1,5 +1,6 @@
 package com.backend.attendance.backend.repositories;
 
+import com.backend.attendance.backend.models.Student;
 import com.backend.attendance.backend.utils.JdbcUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -8,52 +9,30 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class StudentRepository {
     @Autowired
     private JdbcUtil jdbcUtil;
 
-    public Boolean lookforEmail(String email) throws SQLException {
-        Connection connection = jdbcUtil.createConnection();
-        String sql = "select * from student_directory where email = '" + email + "'";
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(sql);
-        if (rs.next()) {
-            return true;
-        }
-        return false;
-    }
+    public List<Student> getAllStudents() throws SQLException{
 
-    public String[] checkForBatchAndYear(String email , String batch, String year) throws SQLException {
-        Connection connection = jdbcUtil.createConnection();
-        String[] isPresent = new String[3]; // Here 3 values respectively mean for email , batch and year...
-        String sql = "select * from student_directory where email = '" + email + "'";
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement.executeQuery(sql);
-        if (rs.next()) {
-            isPresent[0] = String.valueOf(true);
-            String checkBatch = rs.getString("batch");
-            if (checkBatch.equals(batch)) {
-                isPresent[1] = String.valueOf(true);
-                String checkYear = rs.getString("year");
-                if (checkYear.equals(year)) {
-                    isPresent[2] = String.valueOf(true);
-                    return isPresent;
-                }else{
-                    isPresent[2] = String.valueOf(false);
-                    return isPresent;
-                }
-            }else{
-                isPresent[1] = String.valueOf(false);
-                isPresent[2] = String.valueOf(false);
-                return isPresent;
+        List<Student> students = new ArrayList<>();
+        String query = "SELECT email, batch, year FROM student_directory";
+
+        try{
+            Connection conn = jdbcUtil.createConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while(rs.next()){
+                students.add(new Student(rs.getString("email"), rs.getString("batch") , rs.getString("year")));
             }
-        }else{
-            isPresent[0] = String.valueOf(false);
-            isPresent[1] = String.valueOf(false);
-            isPresent[2] = String.valueOf(false);
-            return isPresent;
+
+        }catch (SQLException e){
+            e.printStackTrace();
         }
+        return students;
     }
 }

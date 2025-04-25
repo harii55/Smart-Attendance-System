@@ -30,7 +30,8 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/attendance/auth/**").permitAll()
-                        .requestMatchers("attendance/wifi/**").permitAll()
+                        .requestMatchers("/attendance/wifi/**").permitAll()
+                        .requestMatchers("/attendance/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
