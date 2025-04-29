@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private AuthApi authApi;
     private IpApiService ipApiService;
     private TextView signInMessage;
-
+  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 signInMessage.setText("Network error. Please try again.");
                 signInMessage.setTextColor(Color.RED);
                 Log.e("API_ERROR", t.getMessage());
+
             }
         });
     }
