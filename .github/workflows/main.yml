@@ -1,6 +1,7 @@
 name: Build Desktop Distributions
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
