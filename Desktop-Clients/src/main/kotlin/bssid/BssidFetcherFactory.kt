@@ -6,9 +6,10 @@ object BssidFetcherFactory {
         val os = System.getProperty("os.name")
         println("OS: $os")
         return when{
+            os.contains("Linux", ignoreCase = true) -> LinuxBssidFetcher()
             os.contains("Windows", ignoreCase = true) -> WindowsBssidFetcher()
             os.contains("Mac", ignoreCase = true) -> MacosBssidFetcher()
-            else -> LinuxBssidFetcher()
+            else -> throw IllegalStateException("Unsupported OS: $os")
         }
     }
 }
