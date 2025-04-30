@@ -16,6 +16,9 @@ class WebSocketClient(private val token: String) {
 
     suspend fun connect() {
         try {
+
+            val bssid = BssidFetcherFactory.getBssidFetcher().getBssid()
+            println("Connected to bssid: $bssid")
             client.webSocket(
                 urlString = "ws://localhost:8000/attendance/wifi/ws"
             ) {
@@ -23,8 +26,7 @@ class WebSocketClient(private val token: String) {
 
                 // Send presence every 5 seconds
                 while (true) {
-                    val bssid = BssidFetcherFactory.getBssidFetcher().getBssid()
-                    send(Frame.Text("""{"email": "hariny.24bcs10407@sst.scaler.com", "bssid": "${bssid}"}"""))
+                    send(Frame.Text("""{"email": "hariny.24bcs10407@sst.scaler.com", "bssid": "$bssid"}"""))
                     delay(5000)
                 }
             }
