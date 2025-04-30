@@ -1,5 +1,7 @@
 package network
 
+import bssid.BssidFetcher
+import bssid.BssidFetcherFactory
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.websocket.*
@@ -21,7 +23,8 @@ class WebSocketClient(private val token: String) {
 
                 // Send presence every 5 seconds
                 while (true) {
-                    send(Frame.Text("""{"email": "jenish.24bcs10046@sst.scaler.com", "bssid": "${bssid.BssidFetcher.getBssid()}"}"""))
+                    val bssid = BssidFetcherFactory.getBssidFetcher().getBssid()
+                    send(Frame.Text("""{"email": "hariny.24bcs10407@sst.scaler.com", "bssid": "${bssid}"}"""))
                     delay(5000)
                 }
             }
