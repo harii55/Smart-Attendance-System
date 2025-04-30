@@ -13,14 +13,14 @@ jobs:
       run:
         working-directory: Desktop-Clients
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
       - name: Build Linux
         run: ./gradlew packageUberJarForCurrentOS packageDebDistribution
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: linux-desktop
           path: |
@@ -33,14 +33,14 @@ jobs:
       run:
         working-directory: desktop-client
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
       - name: Build Windows
         run: ./gradlew packageMsiDistribution
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: windows-desktop
           path: desktop-client/build/compose/binaries/main/msi/*.msi
@@ -51,14 +51,14 @@ jobs:
       run:
         working-directory: desktop-client
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
       - name: Build macOS
         run: ./gradlew packageDmgDistribution
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: macos-desktop
           path: desktop-client/build/compose/binaries/main/dmg/*.dmg
