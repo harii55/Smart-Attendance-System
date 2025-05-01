@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Desktop-Clients-desktop-1.0.0">
+    <output-path>$PROJECT_DIR$/Desktop-Clients/build/libs</output-path>
+    <root id="archive" name="Desktop-Clients-desktop-1.0.0.jar" />
+  </artifact>
+</component>
