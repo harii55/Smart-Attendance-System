@@ -6,22 +6,32 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+
 @Repository
 public class AccessPointRepository {
 
     @Autowired
     private JdbcUtil jdbcUtil;
 
-    public boolean checkAccessPoint(String bssid) throws SQLException {
+    private final HashSet<String> cachedBssids = new HashSet<>();
+
+    @PostConstruct
+    public void loadAccessPoints() throws SQLException {
         Connection conn = jdbcUtil.createConnection();
-        String sql = "select * from access_points where mac_address = ?";
+        String sql = "SELECT mac_address FROM access_points";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, bssid);
         ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return true;
-        }else{
-            return false;
+        while (rs.next()) {
+            cachedBssids.add(rs.getString("mac_address"));
         }
+        System.out.println("✅ Access points loaded: " + cachedBssids.size());
+        conn.close();
+    }
+
+    public boolean checkAccessPoint(String bssid) {
+        return cachedBssids.contains(bssid);
     }
 }
+
