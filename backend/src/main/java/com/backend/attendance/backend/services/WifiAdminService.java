@@ -143,7 +143,7 @@ public class WifiAdminService {
             ArrayList<String> attendanceList = new ArrayList<>();
             String email = getAttendance.getString("email");
 
-            for (int i = 1; i < columnNames.length; i++) {
+            for (int i = 2; i < columnCnt; i++) {
                 attendanceList.add(getAttendance.getString(columnNames[i]));
 
             }
@@ -157,10 +157,6 @@ public class WifiAdminService {
         adminGetAttendanceResponse.setYear(year);
         adminGetAttendanceResponse.setColumnNames(columnNames);
 
-        if(getAttendance==null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-            return ResponseEntity.ok(adminGetAttendanceResponse);
-
+        return ResponseEntity.ok(adminGetAttendanceResponse);
     }
 }
