@@ -17,6 +17,10 @@ public class AttendanceRepository {
     @Autowired
     private JdbcUtil jdbcUtil;
 
+    public JdbcUtil getJdbcUtil() {
+        return jdbcUtil;
+    }
+
     public boolean createTable(String year, String batch, String subject) {
         String tableName = subject + "_" + batch + "_" + year + "_WIFI_ATTENDANCE_TABLE";
         try (Connection connection = jdbcUtil.createConnection();
