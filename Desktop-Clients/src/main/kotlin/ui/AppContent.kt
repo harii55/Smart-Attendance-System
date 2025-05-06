@@ -50,13 +50,10 @@ fun AppContent() {
 
                     val client = WebSocketClient(email, bssid)
                     client.connect() // this should include looped pinging logic
-                    status = "✅ Connected"
                 }
             }) {
                 Text("Start Attendance")
             }
-
-            Text("Status: $status")
         }
     }
 }

@@ -62,29 +62,28 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         JsonObject obj = gson.fromJson(message.getPayload().toString(), JsonObject.class);
         String email = obj.get("email").getAsString();
         String bssid = obj.get("bssid").getAsString();
-
         if (!studentProvider.getStudentDirectory().containsKey(email)) {
             session.sendMessage(new TextMessage("Email address does not exist."));
+            System.out.println(email + ": wrong email");
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
         }
 
         String batch = studentProvider.getStudentDirectory().get(email).getBatch();
         String year = studentProvider.getStudentDirectory().get(email).getYear();
-        System.out.println(year);
-        System.out.println(batch);
         String subject = attendanceProvider.getSubjectMap().get(year + ":" + batch);
-        System.out.println(subject);
         String attendanceSessionKey = year + ":" + batch + ":" + subject;
 
         if(!attendanceProvider.getMonitoringStatusMap().containsKey(attendanceSessionKey)){
             session.sendMessage(new TextMessage("Class not started for you yet."));
+            System.out.println(email + ": Class not started for you yet.");
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
         }
 
         if(!accessPointRepository.checkAccessPoint(bssid)){
             session.sendMessage(new TextMessage("Not connected to campus wifi"));
+            System.out.println(email + ": Wrong WIFI");
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
         }

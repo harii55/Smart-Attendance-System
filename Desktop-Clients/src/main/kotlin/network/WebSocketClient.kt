@@ -18,7 +18,7 @@ class WebSocketClient(private val email: String, private val bssid: String) {
         try {
             println("Connected to bssid: $bssid")
             client.webSocket(
-                urlString = "ws://localhost:8000/attendance/wifi/ws"
+                urlString = "ws://4.213.5.84:8000/attendance/wifi/ws"
             ) {
 
                 println("Connected to bssid: $bssid")
