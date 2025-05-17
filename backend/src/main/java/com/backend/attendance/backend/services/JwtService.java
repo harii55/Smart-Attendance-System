@@ -1,20 +1,25 @@
 package com.backend.attendance.backend.services;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class JwtService {
 
-    // Use a strong, random secret in production!
-    private static final String SECRET = "raf7uBYXg+FwZNUqQ4ZpUPJ27Oo36WKUEn8Vm7tuaq8=";
-    private final Key secretKey = new SecretKeySpec(SECRET.getBytes(), SignatureAlgorithm.HS256.getJcaName());
-    private final long expirationTime = 1000 * 60 * 60 * 24; // 24 hours
+    private final Key secretKey;
+    private final long expirationTime = 1000L * 60 * 60 * 24; // 24 hours
+
+    public JwtService(@Value("${jwt.secret}") String secret) {
+        byte[] decodedKey = Base64.getDecoder().decode(secret.getBytes(StandardCharsets.UTF_8));
+        this.secretKey = new SecretKeySpec(decodedKey, SignatureAlgorithm.HS256.getJcaName());
+    }
 
     public String generateToken(String email) {
         return Jwts.builder()
