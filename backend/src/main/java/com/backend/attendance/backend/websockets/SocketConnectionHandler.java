@@ -3,6 +3,7 @@ package com.backend.attendance.backend.websockets;
 import com.backend.attendance.backend.models.StudentSession;
 import com.backend.attendance.backend.repositories.AccessPointRepository;
 import com.backend.attendance.backend.repositories.StudentRepository;
+import com.backend.attendance.backend.services.JwtService;
 import com.backend.attendance.backend.utils.AttendanceProvider;
 import com.backend.attendance.backend.utils.StudentProvider;
 import com.google.gson.Gson;
@@ -30,6 +31,8 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     @Autowired
     private StudentProvider studentProvider;
 
+    @Autowired
+            private JwtService jwtService;
 
     ConcurrentHashMap<String, StudentSession> studentSessionMap = new ConcurrentHashMap<>();
 
@@ -37,7 +40,18 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println("Connection established");
+       String token = session.getUri().getQuery().replace("token=", "");
+         if (token == null || token.isEmpty()) {
+              session.close(CloseStatus.NOT_ACCEPTABLE.withReason("Missing token"));
+              return;
+         }
+       if (!jwtService.isValidToken(token)){
+           session.close(CloseStatus.NOT_ACCEPTABLE.withReason("Invalid or missing token"));
+           return;
+       }
+
+       String email = jwtService.getEmailFromToken(token);
+       session.getAttributes().put("email", email);
     }
 
     @Override
