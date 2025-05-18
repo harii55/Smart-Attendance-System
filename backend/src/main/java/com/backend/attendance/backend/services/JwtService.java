@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class JwtService {
 
     private final Key secretKey;
-    private final long expirationTime = 1000L * 60 * 60 * 24; // 24 hours
+    private final long expirationTime = 1000L * 15; // 24 hours
 
     public JwtService(@Value("${jwt.secret}") String secret) {
         byte[] decodedKey = Base64.getDecoder().decode(secret.getBytes(StandardCharsets.UTF_8));
