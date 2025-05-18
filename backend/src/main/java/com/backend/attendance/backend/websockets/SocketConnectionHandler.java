@@ -3,11 +3,14 @@ package com.backend.attendance.backend.websockets;
 import com.backend.attendance.backend.models.StudentSession;
 import com.backend.attendance.backend.repositories.AccessPointRepository;
 import com.backend.attendance.backend.repositories.StudentRepository;
+import com.backend.attendance.backend.services.JwtService;
 import com.backend.attendance.backend.utils.AttendanceProvider;
 import com.backend.attendance.backend.utils.StudentProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -19,9 +22,10 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@EnableScheduling
 public class SocketConnectionHandler extends TextWebSocketHandler {
 
-
+    private static final long IDLE_TIMEOUT = 20000; // 20 seconds
 
     @Autowired
     private  AttendanceProvider attendanceProvider;
@@ -30,6 +34,8 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
     @Autowired
     private StudentProvider studentProvider;
 
+    @Autowired
+            private JwtService jwtService;
 
     ConcurrentHashMap<String, StudentSession> studentSessionMap = new ConcurrentHashMap<>();
 
@@ -37,7 +43,18 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println("Connection established");
+       String token = session.getUri().getQuery().replace("token=", "");
+         if (token == null || token.isEmpty()) {
+              session.close(CloseStatus.NOT_ACCEPTABLE.withReason("Missing token"));
+              return;
+         }
+       if (!jwtService.isValidToken(token)){
+           session.close(CloseStatus.NOT_ACCEPTABLE.withReason("Invalid or missing token"));
+           return;
+       }
+
+       String email = jwtService.getEmailFromToken(token);
+       session.getAttributes().put("email", email);
     }
 
     @Override
@@ -135,4 +152,21 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         });
 
     }
+
+    @Scheduled(fixedDelay = 5000)
+    public void closeIdleSessions(){
+        long currentTime = System.currentTimeMillis();
+        for (StudentSession studentSession : studentSessionMap.values()) {
+            if (studentSession.getIsConnected() && (currentTime - studentSession.getLastPingTime()) > IDLE_TIMEOUT) {
+                try {
+                    studentSession.getSession().close(CloseStatus.NORMAL.withReason("Idle timeout"));
+                    studentSession.setIsConnected(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                studentSession.setIsConnected(false);
+            }
+        }
+    }
+
 }
