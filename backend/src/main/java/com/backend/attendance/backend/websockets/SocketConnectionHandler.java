@@ -9,6 +9,8 @@ import com.backend.attendance.backend.utils.StudentProvider;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -20,9 +22,10 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@EnableScheduling
 public class SocketConnectionHandler extends TextWebSocketHandler {
 
-
+    private static final long IDLE_TIMEOUT = 20000; // 20 seconds
 
     @Autowired
     private  AttendanceProvider attendanceProvider;
@@ -149,4 +152,21 @@ public class SocketConnectionHandler extends TextWebSocketHandler {
         });
 
     }
+
+    @Scheduled(fixedDelay = 5000)
+    public void closeIdleSessions(){
+        long currentTime = System.currentTimeMillis();
+        for (StudentSession studentSession : studentSessionMap.values()) {
+            if (studentSession.getIsConnected() && (currentTime - studentSession.getLastPingTime()) > IDLE_TIMEOUT) {
+                try {
+                    studentSession.getSession().close(CloseStatus.NORMAL.withReason("Idle timeout"));
+                    studentSession.setIsConnected(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                studentSession.setIsConnected(false);
+            }
+        }
+    }
+
 }
